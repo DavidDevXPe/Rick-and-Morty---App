@@ -1,35 +1,63 @@
-import React, { useEffect } from 'react'
-import useFetch from '../hooks/useFetch';
-import './styles/residentCard.css'
+import PropTypes from 'prop-types';
+import './styles/residentCard.css';
 
-const ResidentCard = ({url}) => {
+const STATUS_LABELS = {
+    alive: 'Vivo',
+    dead: 'Muerto',
+    unknown: 'Desconocido',
+};
 
-    const [resident, getResident] = useFetch();
+const ResidentCard = ({ resident }) => {
+    const statusClass = resident.status.toLowerCase();
+    const statusLabel = STATUS_LABELS[statusClass] ?? resident.status;
 
-    useEffect(() => {
-        getResident(url);
-    }, []);
+    return (
+        <article className='resident'>
+            <figure className='resident_photo'>
+                <img
+                    src={resident.image}
+                    alt={`Retrato de ${resident.name}`}
+                    width='300'
+                    height='300'
+                    loading='lazy'
+                    decoding='async'
+                />
+                <figcaption className='resident_status'>
+                    <span
+                        className={`status_dot status_dot--${statusClass}`}
+                        aria-hidden='true'
+                    />
+                    <span>Estado: {statusLabel}</span>
+                </figcaption>
+            </figure>
+            <h3 className='resident_name'>{resident.name}</h3>
+            <dl className='resident_list'>
+                <div className='resident_item'>
+                    <dt>Especie</dt>
+                    <dd>{resident.species || 'Desconocida'}</dd>
+                </div>
+                <div className='resident_item'>
+                    <dt>Origen</dt>
+                    <dd>{resident.origin?.name || 'Desconocido'}</dd>
+                </div>
+                <div className='resident_item'>
+                    <dt>Episodios</dt>
+                    <dd>{resident.episode?.length ?? 0}</dd>
+                </div>
+            </dl>
+        </article>
+    );
+};
 
-    //console.log(resident);
-
-return (
-    <article className='resident'>
-        <figure className='resident_photo'>
-            <img src={resident?.image} alt="resident img" />
-            <figcaption className='resident_status'>
-                <div className={`resident_circle ${resident?.status}`}></div>
-                <p>{resident?.status}</p>
-            </figcaption>
-        </figure>
-        <h3 className='resident_name'>{resident?.name}</h3>
-        <hr className='resident_hr'/>
-        <ul className='resident_list'>
-            <li className='resident_item'><span>Specie</span><span>{resident?.species}</span></li>
-            <li className='resident_item'><span>Origin</span><span>{resident?.origin.name}</span></li>
-            <li className='resident_item'><span>Eppisodes where appear</span><span>{resident?.episode.length}</span></li>
-        </ul>
-    </article>
-)
-}
+ResidentCard.propTypes = {
+    resident: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        image: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        species: PropTypes.string,
+        origin: PropTypes.shape({ name: PropTypes.string }),
+        episode: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+};
 
 export default ResidentCard;

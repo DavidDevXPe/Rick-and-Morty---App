@@ -1,7 +1,46 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 
-  @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700;800;900&display=swap');
+  --bg: #04141a;
+  --bg-panel: #0a262b;
+  --bg-panel-alt: rgba(255, 255, 255, 0.04);
+  --bg-elevated: #0d2f34;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-accent: rgba(164, 223, 75, 0.28);
+  --text: #f5faf6;
+  --text-muted: #b9c8c9;
+  --accent: #a4df4b;
+  --accent-strong: #72c924;
+  --accent-contrast: #04181b;
+  --danger: #ff8a80;
+  --danger-bg: #3b1715;
+  --danger-text: #ffe7e4;
+  --shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.35);
+  --radius: 0.85rem;
+}
 
-/* ------- Reset ------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #eef4ea;
+  --bg-panel: #ffffff;
+  --bg-panel-alt: rgba(63, 122, 18, 0.06);
+  --bg-elevated: #f5f9f1;
+  --border: rgba(15, 40, 20, 0.12);
+  --border-accent: rgba(63, 122, 18, 0.3);
+  --text: #122016;
+  --text-muted: #4c5c50;
+  --accent: #3f7a12;
+  --accent-strong: #2c5c0c;
+  --accent-contrast: #ffffff;
+  --danger: #c62828;
+  --danger-bg: #fdecea;
+  --danger-text: #7a1a12;
+  --shadow: 0 0.75rem 2rem rgba(20, 40, 15, 0.12);
+}
 
 *,
 *::before,
@@ -12,67 +51,192 @@
 }
 
 html {
-  font-family: 'Fira Sans', sans-serif;
+  min-width: 320px;
+  background: var(--bg);
 }
 
 body {
-  color: white;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--bg);
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-img {
-  display: inline-block;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+button,
+input,
+select {
+  min-height: 44px;
+  color: inherit;
+  font: inherit;
+  border: 0;
 }
 
-input, button {
-  display: inline-block;
+button {
   cursor: pointer;
-  font-family: inherit;
-  border: none;
+  background: none;
 }
 
-ul {
-  list-style: none;
+button:disabled {
+  cursor: not-allowed;
 }
 
-/* ------- App Styles ------- */
+a {
+  color: inherit;
+}
+
+:where(button, input, select, a):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sr_only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+/* Starfield backdrop */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(114, 201, 36, 0.22), transparent 32rem),
+    radial-gradient(circle at 8% 78%, rgba(114, 201, 36, 0.12), transparent 28rem),
+    radial-gradient(1.5px 1.5px at 10% 20%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 25% 65%, #fff, transparent),
+    radial-gradient(1px 1px at 40% 12%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 45%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 85% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 95% 60%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 15% 90%, #fff, transparent),
+    radial-gradient(1px 1px at 60% 92%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 33% 33%, #fff, transparent);
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+  background-size: 100% 100%, 100% 100%, 220px 220px, 260px 260px, 180px 180px, 300px 300px, 240px 240px, 200px 200px, 280px 280px, 220px 220px, 190px 190px, 250px 250px;
+  opacity: 0.9;
+}
+
+:root[data-theme="light"] .starfield {
+  opacity: 0.35;
+}
 
 .app {
-  background: #05292E;
+  position: relative;
+  display: flex;
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-bottom: 35px;
 }
 
-
-
-.app_form {
-  margin-top: 35px;
-}
-
-.app_text {
-  text-align: center;
-  width: 180px;
-  padding: 5px;
-  border-radius: 5px 0 0 5px;
-}
-
-.app_btn {
-  background-color: #71A821;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 0 5px 5px 0;
-}
-
-.app_container {
+.app_main {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: space-evenly;
-  width: 100%;
+  width: min(100% - 2rem, 78rem);
+  flex: 1;
+  margin-inline: auto;
+  flex-direction: column;
+  padding: 1.5rem 0 3rem;
+}
 
+.resident_section {
+  width: 100%;
+}
+
+.page_container {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 1.1rem;
+}
+
+.section_title {
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-size: 1.15rem;
+}
+
+.status_dot {
+  width: 0.7rem;
+  aspect-ratio: 1;
+  flex: none;
+  background-color: #aab8ba;
+  border-radius: 50%;
+}
+
+.status_dot--alive {
+  background-color: #49cf4a;
+}
+
+.status_dot--dead {
+  background-color: #ff5c5c;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  color: var(--accent-contrast);
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--accent);
+  border-radius: 0.55rem;
+  transition: background-color 160ms ease, opacity 160ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+}
+
+.btn--ghost {
+  color: var(--text);
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--bg-elevated);
+}
+
+.status_message {
+  margin: 2rem 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.error_panel {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(100%, 40rem);
+  margin: 2rem auto;
+  padding: 1.25rem;
+  color: var(--danger-text);
+  text-align: center;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

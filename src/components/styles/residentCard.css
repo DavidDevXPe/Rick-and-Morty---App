@@ -1,62 +1,66 @@
 .resident {
-    background-color: #072226;
-    width: 250px;
-    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
     overflow: hidden;
+    justify-self: center;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 .resident_photo {
     position: relative;
+    margin: 0;
+}
+
+.resident_photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: var(--bg-elevated);
 }
 
 .resident_status {
-    background-color: #072226;
     position: absolute;
-    top: 10%;
-    padding: 5px 10px;
-    border-radius: 0 5px 5px 0;
+    top: 1rem;
+    left: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-}
-
-.resident_circle {
-    background-color: gray;
-    width: 15px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-}
-
-.Dead {
-    background-color: red;
-}
-
-.Alive {
-    background-color: #04A105;
+    gap: 0.55rem;
+    padding: 0.45rem 0.75rem;
+    background-color: rgba(4, 20, 26, 0.88);
+    border-radius: 0 0.4rem 0.4rem 0;
 }
 
 .resident_name {
+    padding: 1rem 1rem 0.85rem;
     text-align: center;
-    margin: 15px 0;
-}
-
-.resident_hr {
-    border: 1px solid rgba(128, 128, 128, 0.301);
-    width: 85%;
-    margin: 0 auto;
+    overflow-wrap: anywhere;
 }
 
 .resident_list {
-    padding: 15px;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-top: 1px solid var(--border);
 }
 
 .resident_item {
     display: flex;
+    min-width: 0;
     flex-direction: column;
-    margin: 10px 0;
+    gap: 0.2rem;
 }
 
-.resident_item span:first-child {
-    padding-left: 20px;
-    color: gray;
+.resident_item dt {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.resident_item dd {
+    overflow-wrap: anywhere;
 }

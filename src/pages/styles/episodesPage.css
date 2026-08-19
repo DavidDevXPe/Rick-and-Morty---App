@@ -1,0 +1,49 @@
+.episodes_page {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.episodes_intro {
+    width: 100%;
+    padding-bottom: 0.5rem;
+    text-align: center;
+}
+
+.episodes_intro .section_title {
+    color: var(--accent);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.episodes_intro p {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+}
+
+.episodes_search {
+    display: flex;
+    width: min(100%, 28rem);
+    margin: 1.5rem 0;
+}
+
+.episodes_search input {
+    min-width: 0;
+    flex: 1;
+    padding: 0.65rem 0.9rem;
+    color: var(--text);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-right: 0;
+    border-radius: 0.55rem 0 0 0.55rem;
+}
+
+.episodes_search .btn {
+    border-radius: 0 0.55rem 0.55rem 0;
+}
+
+.episodes_load_more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}

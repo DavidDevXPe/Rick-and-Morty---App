@@ -1,10 +1,18 @@
 .pagination {
     display: flex;
-    gap: 25px;
-    margin: 25px 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0 1.5rem;
 }
 
 .pagination button {
-    padding: 5px 10px;
-    border-radius: 5px;
+    min-width: 6.5rem;
+}
+
+.pagination span {
+    min-width: 7.5rem;
+    color: var(--text-muted);
+    text-align: center;
 }

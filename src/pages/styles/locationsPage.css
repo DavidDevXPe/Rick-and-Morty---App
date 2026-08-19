@@ -1,0 +1,90 @@
+.locations_page {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.locations_intro {
+    width: 100%;
+    padding-bottom: 0.5rem;
+    text-align: center;
+}
+
+.locations_intro .section_title {
+    color: var(--accent);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.locations_intro p {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+}
+
+.locations_form {
+    width: min(100%, 28rem);
+    margin: 1.5rem 0;
+}
+
+.locations_form > label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.locations_form_controls {
+    display: flex;
+    width: 100%;
+}
+
+.locations_form_controls input {
+    min-width: 0;
+    flex: 1;
+    padding: 0.65rem 0.8rem;
+    color: var(--text);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-right: 0;
+    border-radius: 0.55rem 0 0 0.55rem;
+}
+
+.locations_form_controls input::placeholder {
+    color: var(--text-muted);
+}
+
+.locations_form_controls input[aria-invalid="true"] {
+    box-shadow: inset 0 0 0 2px var(--danger);
+}
+
+.locations_form_controls .btn {
+    border-radius: 0 0.55rem 0.55rem 0;
+}
+
+.locations_help,
+.locations_field_error {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.locations_help {
+    color: var(--text-muted);
+}
+
+.locations_field_error {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+@media (max-width: 30rem) {
+    .locations_form_controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .locations_form_controls input,
+    .locations_form_controls .btn {
+        width: 100%;
+        border-radius: 0.55rem;
+        border-right: 1px solid var(--border);
+    }
+}

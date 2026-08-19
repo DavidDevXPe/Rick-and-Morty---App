@@ -1,0 +1,9 @@
+.characters_page {
+    width: 100%;
+}
+
+.characters_load_more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}

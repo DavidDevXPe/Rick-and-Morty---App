@@ -1,0 +1,109 @@
+.character_card {
+    width: 100%;
+    max-width: 300px;
+    overflow: hidden;
+    justify-self: center;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.character_card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+}
+
+.character_photo {
+    position: relative;
+    margin: 0;
+}
+
+.character_photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: var(--bg-elevated);
+}
+
+.character_status_pill {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.65rem;
+    color: #f5faf6;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background-color: rgba(4, 20, 26, 0.82);
+    border-radius: 999px;
+}
+
+.character_favorite {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-height: 0;
+    color: #f5faf6;
+    font-size: 1.2rem;
+    background-color: rgba(4, 20, 26, 0.6);
+    border-radius: 50%;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.character_favorite:hover {
+    transform: scale(1.08);
+}
+
+.character_favorite--active {
+    color: #ff5c7a;
+    background-color: rgba(4, 20, 26, 0.82);
+}
+
+.character_name {
+    padding: 1rem 1rem 0.15rem;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.character_species {
+    padding: 0.15rem 1rem 0;
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.character_list {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.character_item {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.character_item dt {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.character_item dd {
+    overflow-wrap: anywhere;
+}

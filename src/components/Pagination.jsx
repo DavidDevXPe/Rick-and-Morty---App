@@ -1,26 +1,44 @@
-import React from 'react'
-import './styles/pagination.css'
+import PropTypes from 'prop-types';
+import './styles/pagination.css';
 
-const Pagination = ({currentPage, setCurrentPage, totalPage}) => {
-
+const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
     const handlePrev = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    }
+        setCurrentPage((page) => Math.max(1, page - 1));
+    };
 
     const handleNext = () => {
-        if (currentPage < totalPage) {
-            setCurrentPage(currentPage + 1);
-        }
-    }
-return (
-    <div className='pagination'>
-        <button onClick={handlePrev}>Prev</button>
-        <span>{`${currentPage} / ${totalPage}`}</span>
-        <button onClick={handleNext}>Next</button>
-    </div>
-)
-}
+        setCurrentPage((page) => Math.min(totalPages, page + 1));
+    };
 
-export default Pagination
+    return (
+        <nav className='pagination' aria-label='Páginas de residentes'>
+            <button
+                type='button'
+                className='btn btn--ghost'
+                onClick={handlePrev}
+                disabled={currentPage <= 1}
+            >
+                Anterior
+            </button>
+            <span aria-live='polite' aria-atomic='true'>
+                Página {currentPage} de {totalPages}
+            </span>
+            <button
+                type='button'
+                className='btn'
+                onClick={handleNext}
+                disabled={currentPage >= totalPages}
+            >
+                Siguiente
+            </button>
+        </nav>
+    );
+};
+
+Pagination.propTypes = {
+    currentPage: PropTypes.number.isRequired,
+    setCurrentPage: PropTypes.func.isRequired,
+    totalPages: PropTypes.number.isRequired,
+};
+
+export default Pagination;

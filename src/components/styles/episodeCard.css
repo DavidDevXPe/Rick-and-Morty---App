@@ -1,0 +1,42 @@
+.episode_card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1.1rem;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.episode_card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+}
+
+.episode_chip {
+    padding: 0.2rem 0.6rem;
+    color: var(--accent-contrast);
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: var(--accent);
+    border-radius: 0.4rem;
+}
+
+.episode_name {
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.episode_date,
+.episode_count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.episode_select {
+    width: 100%;
+    margin-top: 0.5rem;
+}

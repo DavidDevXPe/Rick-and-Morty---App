@@ -1,39 +1,40 @@
 .location {
-    background-color: #072226;
-    padding: 20px;
-    margin: 35px 0;
-    border-radius: 10px;
-    transition: transform .25s;
-    cursor: pointer;
-}
-
-.location:hover {
-    transform: scale(1.1);
-    transition: transform .25s;
-    box-shadow: -5px -5px 5px black;
+    width: min(100%, 48rem);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    margin: 1.5rem 0 1rem;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 .location_title {
+    margin-bottom: 1.25rem;
+    color: var(--accent);
     text-align: center;
-    margin-bottom: 20px;
-    color: #7AB823;
 }
 
 .location_list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1rem;
 }
 
 .location_item {
     display: flex;
+    min-width: 0;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
-    color: gray;
+    gap: 0.35rem;
+    text-align: center;
 }
 
-.location_item span {
-    color: white;
-    font-weight: 600;
+.location_item dt {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.location_item dd {
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
 }
