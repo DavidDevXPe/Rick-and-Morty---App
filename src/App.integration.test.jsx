@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { API_BASE_URL } from './config';
@@ -53,6 +53,11 @@ describe('App (integration)', () => {
     expect(await screen.findByRole('heading', { name: 'Pilot' })).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Rick Sanchez' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Buscar personaje...')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Agregar Rick Sanchez a favoritos' }));
+    await user.click(screen.getByRole('button', { name: 'Menú de perfil' }));
+    expect(within(screen.getByRole('menu')).getByText('1')).toBeInTheDocument();
+    await user.keyboard('{Escape}');
 
     await user.click(screen.getByRole('button', { name: 'Episodios' }));
     expect(await screen.findByRole('heading', { name: 'Lawnmower Dog' })).toBeInTheDocument();

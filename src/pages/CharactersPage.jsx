@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import CharacterCard from '../components/CharacterCard';
-import EpisodeSpotlight from '../components/EpisodeSpotlight';
+import CharacterGrid from '../components/CharacterGrid';
+import EpisodeHighlight from '../components/EpisodeHighlight';
 import SearchFilters from '../components/SearchFilters';
 import { API_BASE_URL, MAX_EPISODE_ID, MIN_EPISODE_ID } from '../config';
 import useFavorites from '../hooks/useFavorites';
@@ -13,13 +13,13 @@ const EMPTY_FILTERS = { gender: '', name: '', species: '', status: '' };
 
 const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
     const [mode, setMode] = useState('browse');
-    const [currentEpisodeId, setCurrentEpisodeId] = useState(MIN_EPISODE_ID);
+    const [currentEpisodeId, setCurrentEpisodeId] = useState(
+        () => focusEpisodeId ?? MIN_EPISODE_ID,
+    );
     const [filters, setFilters] = useState(EMPTY_FILTERS);
     const [committedFilters, setCommittedFilters] = useState(EMPTY_FILTERS);
     const { favoriteIds, isFavorite, toggleFavorite } = useFavorites();
 
-    // Adjust state in response to the parent-driven navigation props (rather
-    // than in an effect) — see https://react.dev/learn/you-might-not-need-an-effect
     const [trackedFocusEpisodeId, setTrackedFocusEpisodeId] = useState(focusEpisodeId);
     if (focusEpisodeId !== trackedFocusEpisodeId) {
         setTrackedFocusEpisodeId(focusEpisodeId);
@@ -37,11 +37,18 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
         }
     }
 
-    const { data: episode } = useFetch(
-        mode === 'browse' ? `${API_BASE_URL}/episode/${currentEpisodeId}` : null,
-    );
+    const {
+        data: episode,
+        error: episodeError,
+        isLoading: isEpisodeLoading,
+        refetch: refetchEpisode,
+    } = useFetch(mode === 'browse' ? `${API_BASE_URL}/episode/${currentEpisodeId}` : null);
 
     const buildSearchUrl = (page) => {
+        if (mode !== 'search') {
+            return null;
+        }
+
         const params = new URLSearchParams({ page: String(page) });
         Object.entries(committedFilters).forEach(([key, value]) => {
             if (value) {
@@ -51,7 +58,9 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
         return `${API_BASE_URL}/character?${params.toString()}`;
     };
 
-    const searchResetKey = JSON.stringify(committedFilters);
+    const searchResetKey = mode === 'search'
+        ? JSON.stringify(committedFilters)
+        : 'inactive';
     const {
         error: searchError,
         hasMore: hasMoreResults,
@@ -93,6 +102,8 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
         setMode('browse');
     };
 
+    const isEmptySearch = searchError?.status === 404;
+
     return (
         <div className='characters_page'>
             <SearchFilters
@@ -104,94 +115,50 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
             />
 
             {mode === 'browse' && (
-                <EpisodeSpotlight
+                <EpisodeHighlight
                     key={currentEpisodeId}
                     canGoNext={currentEpisodeId < MAX_EPISODE_ID}
                     canGoPrev={currentEpisodeId > MIN_EPISODE_ID}
                     episode={episode}
+                    episodeError={episodeError}
                     favoriteIds={favoriteIds}
+                    isEpisodeLoading={isEpisodeLoading}
                     onNext={() => setCurrentEpisodeId((id) => Math.min(MAX_EPISODE_ID, id + 1))}
                     onPrev={() => setCurrentEpisodeId((id) => Math.max(MIN_EPISODE_ID, id - 1))}
+                    onRetryEpisode={refetchEpisode}
                     onToggleFavorite={toggleFavorite}
                 />
             )}
 
             {mode === 'search' && (
-                <section aria-labelledby='search-results-title'>
-                    <h2 id='search-results-title' className='section_title'>Resultados de búsqueda</h2>
-
-                    {searchResults.length === 0 && isSearchLoading && (
-                        <p className='status_message' role='status'>Buscando personajes…</p>
-                    )}
-
-                    {searchError && searchResults.length === 0 && (
-                        <div className='error_panel' role='alert'>
-                            <p>No se encontraron personajes con esos criterios.</p>
-                            <button type='button' className='btn' onClick={refetchSearch}>Reintentar</button>
-                        </div>
-                    )}
-
-                    {searchResults.length > 0 && (
-                        <>
-                            <div className='page_container'>
-                                {searchResults.map((character) => (
-                                    <CharacterCard
-                                        key={character.id}
-                                        character={character}
-                                        isFavorite={isFavorite(character.id)}
-                                        onToggleFavorite={toggleFavorite}
-                                    />
-                                ))}
-                            </div>
-                            {hasMoreResults && (
-                                <div className='characters_load_more'>
-                                    <button
-                                        type='button'
-                                        className='btn btn--ghost'
-                                        onClick={loadMoreResults}
-                                        disabled={isSearchLoading}
-                                    >
-                                        {isSearchLoading ? 'Cargando…' : 'Cargar más personajes ↓'}
-                                    </button>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </section>
+                <CharacterGrid
+                    characters={searchResults}
+                    emptyMessage='No encontramos personajes con estos filtros.'
+                    error={isEmptySearch ? null : searchError}
+                    hasMore={!searchError && hasMoreResults}
+                    isFavorite={isFavorite}
+                    isLoading={isSearchLoading}
+                    onClear={handleClearFilters}
+                    onLoadMore={loadMoreResults}
+                    onRetry={refetchSearch}
+                    onToggleFavorite={toggleFavorite}
+                    title='Resultados de búsqueda'
+                />
             )}
 
             {mode === 'favorites' && (
-                <section aria-labelledby='favorites-title'>
-                    <h2 id='favorites-title' className='section_title'>Tus favoritos</h2>
-
-                    {favoriteIds.length === 0 && (
-                        <p className='status_message'>Todavía no tienes personajes favoritos.</p>
-                    )}
-
-                    {favoriteIds.length > 0 && isFavoritesLoading && (
-                        <p className='status_message' role='status'>Cargando favoritos…</p>
-                    )}
-
-                    {favoritesError && (
-                        <div className='error_panel' role='alert'>
-                            <p>No se pudieron cargar tus favoritos.</p>
-                            <button type='button' className='btn' onClick={refetchFavorites}>Reintentar</button>
-                        </div>
-                    )}
-
-                    {favoriteCharacters.length > 0 && (
-                        <div className='page_container'>
-                            {favoriteCharacters.map((character) => (
-                                <CharacterCard
-                                    key={character.id}
-                                    character={character}
-                                    isFavorite
-                                    onToggleFavorite={toggleFavorite}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </section>
+                <CharacterGrid
+                    characters={favoriteCharacters}
+                    emptyActionLabel='Volver a episodios'
+                    emptyMessage='Todavía no tienes personajes favoritos. Guarda alguno desde cualquier card.'
+                    error={favoritesError}
+                    isFavorite={isFavorite}
+                    isLoading={isFavoritesLoading}
+                    onClear={handleClearFilters}
+                    onRetry={refetchFavorites}
+                    onToggleFavorite={toggleFavorite}
+                    title='Tus favoritos'
+                />
             )}
         </div>
     );

@@ -1,42 +1,223 @@
 .episode_card {
+    position: relative;
     display: flex;
+    min-width: 0;
+    min-height: 330px;
+    overflow: hidden;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.4rem;
-    padding: 1.1rem;
-    background-color: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: border-color 160ms ease, transform 160ms ease;
+    padding: 18px;
+    background:
+        radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--rm-accent) 8%, transparent), transparent 42%),
+        linear-gradient(155deg, color-mix(in srgb, var(--rm-surface-hover) 66%, transparent), var(--rm-surface) 54%);
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius-lg);
+    box-shadow: var(--rm-shadow-card);
+    isolation: isolate;
+    transition:
+        border-color var(--rm-transition),
+        box-shadow var(--rm-transition),
+        transform var(--rm-transition);
+}
+
+.episode_card::before {
+    position: absolute;
+    top: -72px;
+    right: -74px;
+    z-index: -1;
+    width: 165px;
+    height: 165px;
+    content: "";
+    border: 1px solid color-mix(in srgb, var(--rm-accent) 18%, transparent);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 22px color-mix(in srgb, var(--rm-accent) 2.5%, transparent),
+        0 0 0 46px color-mix(in srgb, var(--rm-accent) 1.5%, transparent);
 }
 
 .episode_card:hover {
-    border-color: var(--border-accent);
-    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--rm-border-accent) 72%, var(--rm-border));
+    box-shadow: var(--rm-shadow-card), var(--rm-shadow-accent);
+    transform: translateY(-4px);
+}
+
+.episode_card_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .episode_chip {
-    padding: 0.2rem 0.6rem;
-    color: var(--accent-contrast);
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 4px 10px;
+    color: var(--rm-accent);
     font-size: 0.75rem;
     font-weight: 800;
-    background: var(--accent);
-    border-radius: 0.4rem;
+    letter-spacing: 0.045em;
+    background: color-mix(in srgb, var(--rm-accent) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rm-accent) 45%, transparent);
+    border-radius: 999px;
+}
+
+.episode_archive_number {
+    color: color-mix(in srgb, var(--rm-text-secondary) 75%, transparent);
+    font-size: 0.74rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+}
+
+.episode_orbit {
+    position: relative;
+    display: grid;
+    width: 104px;
+    height: 104px;
+    place-items: center;
+    align-self: center;
+    margin: 13px 0 8px;
+}
+
+.episode_orbit::before,
+.episode_orbit::after,
+.episode_orbit_ring {
+    position: absolute;
+    content: "";
+    border: 1px solid color-mix(in srgb, var(--rm-accent) 24%, transparent);
+    border-radius: 50%;
+}
+
+.episode_orbit::before {
+    inset: 7px;
+    border-style: dashed;
+    transform: rotate(18deg);
+}
+
+.episode_orbit::after {
+    inset: 17px -2px;
+    opacity: 0.58;
+    transform: rotate(-31deg);
+}
+
+.episode_orbit_ring {
+    inset: 23px 4px;
+    opacity: 0.32;
+    transform: rotate(64deg);
+}
+
+.episode_orbit_core {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 47px;
+    height: 47px;
+    place-items: center;
+    color: var(--rm-on-accent);
+    background: linear-gradient(145deg, var(--rm-accent), var(--rm-accent-strong));
+    border: 1px solid color-mix(in srgb, var(--rm-accent) 80%, var(--rm-text));
+    border-radius: 50%;
+    box-shadow: 0 0 24px color-mix(in srgb, var(--rm-accent) 20%, transparent);
+    transition: transform var(--rm-transition), box-shadow var(--rm-transition);
+}
+
+.episode_card:hover .episode_orbit_core {
+    box-shadow: 0 0 29px color-mix(in srgb, var(--rm-accent) 27%, transparent);
+    transform: scale(1.05);
+}
+
+.episode_orbit_core svg {
+    margin-left: 2px;
+}
+
+.episode_card_body {
+    min-width: 0;
 }
 
 .episode_name {
-    font-size: 1.05rem;
+    min-height: 2.6em;
+    color: var(--rm-text);
+    font-size: 1.08rem;
+    font-weight: 760;
+    line-height: 1.3;
     overflow-wrap: anywhere;
 }
 
-.episode_date,
-.episode_count {
-    color: var(--text-muted);
-    font-size: 0.85rem;
+.episode_metadata {
+    display: grid;
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.episode_meta_item {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+    color: var(--rm-text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.episode_meta_item svg {
+    flex: none;
+    color: color-mix(in srgb, var(--rm-accent) 74%, var(--rm-text-secondary));
+}
+
+.episode_meta_item span {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .episode_select {
+    display: flex;
     width: 100%;
-    margin-top: 0.5rem;
+    min-height: 43px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 14px;
+    margin-top: auto;
+    color: var(--rm-text);
+    font-size: 0.87rem;
+    font-weight: 750;
+    background: color-mix(in srgb, var(--rm-bg) 68%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rm-border) 82%, transparent);
+    border-radius: var(--rm-radius-sm);
+    transition:
+        color var(--rm-transition),
+        background-color var(--rm-transition),
+        border-color var(--rm-transition),
+        box-shadow var(--rm-transition);
+}
+
+.episode_select svg {
+    color: var(--rm-accent);
+    transition: transform var(--rm-transition);
+}
+
+.episode_select:hover {
+    color: var(--rm-accent);
+    background: color-mix(in srgb, var(--rm-surface-hover) 84%, transparent);
+    border-color: color-mix(in srgb, var(--rm-accent) 54%, var(--rm-border));
+    box-shadow: inset 0 0 18px color-mix(in srgb, var(--rm-accent) 3%, transparent);
+}
+
+.episode_select:hover svg {
+    transform: translateX(3px);
+}
+
+:root[data-theme="light"] .episode_card {
+    background:
+        radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--rm-accent) 7%, transparent), transparent 42%),
+        linear-gradient(155deg, var(--rm-surface-hover), var(--rm-surface) 58%);
+}
+
+:root[data-theme="light"] .episode_select {
+    background: color-mix(in srgb, var(--rm-bg-secondary) 80%, transparent);
+}
+
+@media (max-width: 549px) {
+    .episode_card {
+        min-height: 310px;
+    }
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AlertTriangle, MapPin, RefreshCw, Search, Sparkles } from 'lucide-react';
 import LocationCard from '../components/LocationCard';
 import Pagination from '../components/Pagination';
 import ResidentList from '../components/ResidentList';
@@ -22,6 +23,24 @@ const getLocationErrorMessage = (error, locationId) => {
 
     return 'No se pudo cargar la ubicación. Verifica tu conexión e intenta de nuevo.';
 };
+
+const LocationSkeleton = () => (
+    <section className='location_skeleton' role='status' aria-live='polite'>
+        <span className='sr_only'>Cargando ubicación…</span>
+        <div className='location_skeleton_heading' aria-hidden='true'>
+            <span className='skeleton location_skeleton_eyebrow' />
+            <span className='skeleton location_skeleton_title' />
+        </div>
+        <div className='location_skeleton_details' aria-hidden='true'>
+            {Array.from({ length: 3 }, (_, index) => (
+                <div className='location_skeleton_detail' key={index}>
+                    <span className='skeleton location_skeleton_label' />
+                    <span className='skeleton location_skeleton_value' />
+                </div>
+            ))}
+        </div>
+    </section>
+);
 
 const LocationsPage = () => {
     const [locationId, setLocationId] = useState(getRandomLocationId);
@@ -84,58 +103,89 @@ const LocationsPage = () => {
 
     return (
         <div className='locations_page' aria-busy={isLocationLoading}>
-            <div className='locations_intro'>
-                <h1 className='section_title'>Ubicaciones</h1>
-                <p>Explora cada dimensión conocida del multiverso y sus residentes.</p>
-            </div>
-
-            <form className='locations_form' onSubmit={handleSubmit} noValidate>
-                <label htmlFor='location-id'>ID de ubicación</label>
-                <div className='locations_form_controls'>
-                    <input
-                        id='location-id'
-                        name='locationId'
-                        type='number'
-                        min={MIN_LOCATION_ID}
-                        max={MAX_LOCATION_ID}
-                        step='1'
-                        inputMode='numeric'
-                        autoComplete='off'
-                        required
-                        value={searchValue}
-                        onChange={handleInputChange}
-                        aria-invalid={Boolean(validationError)}
-                        aria-describedby={validationError ? 'location-input-error' : 'location-help'}
-                        placeholder={`${MIN_LOCATION_ID} a ${MAX_LOCATION_ID}`}
-                    />
-                    <button className='btn' type='submit'>Buscar</button>
+            <section className='locations_hero' aria-labelledby='locations-title'>
+                <div className='locations_intro'>
+                    <span className='locations_eyebrow'>
+                        <Sparkles size={15} aria-hidden='true' />
+                        Archivo interdimensional
+                    </span>
+                    <h1 id='locations-title'>Ubicaciones</h1>
+                    <p>Explora cada dimensión conocida del multiverso y descubre quién vive en ella.</p>
+                    <span className='locations_range'>
+                        <MapPin size={16} aria-hidden='true' />
+                        {MAX_LOCATION_ID} ubicaciones registradas
+                    </span>
                 </div>
-                <p id='location-help' className='locations_help'>
-                    Ingresa un número entero de {MIN_LOCATION_ID} a {MAX_LOCATION_ID}.
-                </p>
-                {validationError && (
-                    <p id='location-input-error' className='locations_field_error' role='alert'>
-                        {validationError}
+
+                <form className='locations_form' onSubmit={handleSubmit} noValidate>
+                    <div className='locations_form_heading'>
+                        <span className='locations_form_icon' aria-hidden='true'>
+                            <MapPin size={20} />
+                        </span>
+                        <div>
+                            <label htmlFor='location-id'>ID de ubicación</label>
+                            <p>Abre las coordenadas de un lugar</p>
+                        </div>
+                    </div>
+
+                    <div className='locations_form_controls'>
+                        <input
+                            id='location-id'
+                            name='locationId'
+                            type='number'
+                            min={MIN_LOCATION_ID}
+                            max={MAX_LOCATION_ID}
+                            step='1'
+                            inputMode='numeric'
+                            autoComplete='off'
+                            required
+                            value={searchValue}
+                            onChange={handleInputChange}
+                            aria-invalid={Boolean(validationError)}
+                            aria-describedby={validationError ? 'location-input-error' : 'location-help'}
+                            placeholder={`${MIN_LOCATION_ID} a ${MAX_LOCATION_ID}`}
+                        />
+                        <button className='btn locations_search_button' type='submit'>
+                            <Search size={18} strokeWidth={2.2} aria-hidden='true' />
+                            Buscar
+                        </button>
+                    </div>
+                    <p id='location-help' className='locations_help'>
+                        Ingresa un número entero de {MIN_LOCATION_ID} a {MAX_LOCATION_ID}.
                     </p>
-                )}
-            </form>
+                    {validationError && (
+                        <p id='location-input-error' className='locations_field_error' role='alert'>
+                            <AlertTriangle size={15} aria-hidden='true' />
+                            {validationError}
+                        </p>
+                    )}
+                </form>
+            </section>
 
             {isLocationLoading && (
-                <p className='status_message' role='status' aria-live='polite'>
-                    Cargando ubicación…
-                </p>
+                <LocationSkeleton />
             )}
 
             {!isLocationLoading && locationError && (
-                <div className='error_panel' role='alert'>
-                    <p>{getLocationErrorMessage(locationError, locationId)}</p>
-                    <button type='button' className='btn' onClick={refetchLocation}>Reintentar</button>
+                <div className='collection_state collection_state--error locations_state' role='alert'>
+                    <span className='collection_state_icon' aria-hidden='true'>
+                        <AlertTriangle size={25} />
+                    </span>
+                    <div>
+                        <h2>Coordenadas no disponibles</h2>
+                        <p>{getLocationErrorMessage(locationError, locationId)}</p>
+                    </div>
+                    <button type='button' className='btn' onClick={refetchLocation}>
+                        <RefreshCw size={17} aria-hidden='true' />
+                        Reintentar
+                    </button>
                 </div>
             )}
 
             {!isLocationLoading && !locationError && location && (
-                <>
+                <div className='locations_results'>
                     <LocationCard location={location} />
+                    <ResidentList residentUrls={visibleResidentUrls} />
                     {totalPages > 1 && (
                         <Pagination
                             currentPage={currentPage}
@@ -143,8 +193,7 @@ const LocationsPage = () => {
                             totalPages={totalPages}
                         />
                     )}
-                    <ResidentList residentUrls={visibleResidentUrls} />
-                </>
+                </div>
             )}
         </div>
     );

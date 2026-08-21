@@ -38,6 +38,30 @@ describe('CharactersPage', () => {
     expect(screen.getByRole('heading', { name: 'Morty Smith' })).toBeInTheDocument();
   });
 
+  it('opens the episode supplied by navigation on the initial mount', async () => {
+    const selectedEpisode = createEpisode({ id: 5, name: 'Meeseeks and Destroy', characterCount: 2 });
+    const fetchMock = vi.fn((url) => {
+      if (url.includes('/episode/5')) {
+        return Promise.resolve(createJsonResponse(selectedEpisode));
+      }
+
+      if (url.includes('/character/1,2')) {
+        return Promise.resolve(createJsonResponse([rick, morty]));
+      }
+
+      return Promise.reject(new Error(`Unexpected request: ${url}`));
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<CharactersPage favoritesRequestId={0} focusEpisodeId={5} />);
+
+    expect(await screen.findByRole('heading', { name: 'Meeseeks and Destroy' })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/episode/5'),
+      expect.anything(),
+    );
+  });
+
   it('searches characters with the selected name filter', async () => {
     const user = userEvent.setup();
     const fetchMock = buildFetchMock();

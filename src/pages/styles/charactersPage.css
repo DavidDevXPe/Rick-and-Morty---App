@@ -1,9 +1,8 @@
 .characters_page {
     width: 100%;
+    min-width: 0;
 }
 
-.characters_load_more {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.5rem;
+.characters_page > .character_collection {
+    margin-top: 6px;
 }

@@ -24,13 +24,14 @@ function App() {
   return (
     <div className='app'>
       <div className='starfield' aria-hidden='true' />
+      <a className='skip_link' href='#main-content'>Saltar al contenido</a>
       <Header
         activeTab={activeTab}
         onShowFavorites={handleShowFavorites}
         onTabChange={setActiveTab}
       />
 
-      <main className='app_main'>
+      <main id='main-content' className='app_main'>
         {activeTab === 'characters' && (
           <CharactersPage favoritesRequestId={favoritesRequestId} focusEpisodeId={focusEpisodeId} />
         )}

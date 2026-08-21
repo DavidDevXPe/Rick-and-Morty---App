@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-hidden="true">
+  <defs>
+    <radialGradient id="orbit-fill">
+      <stop offset="0" stop-color="#b7f21a" stop-opacity=".17"/>
+      <stop offset=".62" stop-color="#5eaf19" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#03101a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="120" cy="120" r="112" fill="url(#orbit-fill)"/>
+  <g fill="none" stroke="#b7f21a" opacity=".2">
+    <ellipse cx="120" cy="120" rx="86" ry="31" transform="rotate(-18 120 120)"/>
+    <ellipse cx="120" cy="120" rx="94" ry="46" transform="rotate(35 120 120)"/>
+    <circle cx="120" cy="120" r="57" stroke-dasharray="3 8"/>
+  </g>
+  <circle cx="43" cy="126" r="4" fill="#b7f21a" opacity=".7"/>
+  <circle cx="184" cy="74" r="2.5" fill="#dfff70" opacity=".8"/>
+</svg>

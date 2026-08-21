@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import './styles/pagination.css';
 
 const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
@@ -18,9 +19,10 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
                 onClick={handlePrev}
                 disabled={currentPage <= 1}
             >
+                <ArrowLeft size={18} aria-hidden='true' />
                 Anterior
             </button>
-            <span aria-live='polite' aria-atomic='true'>
+            <span className='pagination_status' aria-live='polite' aria-atomic='true'>
                 Página {currentPage} de {totalPages}
             </span>
             <button
@@ -30,6 +32,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
                 disabled={currentPage >= totalPages}
             >
                 Siguiente
+                <ArrowRight size={18} aria-hidden='true' />
             </button>
         </nav>
     );

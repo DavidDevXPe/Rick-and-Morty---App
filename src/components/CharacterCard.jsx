@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { STATUS_LABELS } from '../config';
+import { Heart, MapPin, UserRound } from 'lucide-react';
+import { SPECIES_LABELS } from '../config';
+import StatusBadge from './StatusBadge';
 import './styles/characterCard.css';
 
 const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
-    const statusClass = character.status.toLowerCase();
-    const statusLabel = STATUS_LABELS[statusClass] ?? character.status;
+    const speciesLabel = SPECIES_LABELS[character.species] ?? character.species ?? 'Desconocida';
 
     return (
         <article className='character_card'>
@@ -13,14 +14,11 @@ const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
                     src={character.image}
                     alt={`Retrato de ${character.name}`}
                     width='300'
-                    height='300'
+                    height='225'
                     loading='lazy'
                     decoding='async'
                 />
-                <span className={`character_status_pill character_status_pill--${statusClass}`}>
-                    <span className={`status_dot status_dot--${statusClass}`} aria-hidden='true' />
-                    {statusLabel}
-                </span>
+                <StatusBadge status={character.status} />
                 <button
                     type='button'
                     className={`character_favorite${isFavorite ? ' character_favorite--active' : ''}`}
@@ -28,21 +26,30 @@ const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
                     aria-pressed={isFavorite}
                     aria-label={isFavorite ? `Quitar ${character.name} de favoritos` : `Agregar ${character.name} a favoritos`}
                 >
-                    {isFavorite ? '♥' : '♡'}
+                    <Heart size={22} strokeWidth={2} aria-hidden='true' />
                 </button>
             </figure>
-            <h3 className='character_name'>{character.name}</h3>
-            <p className='character_species'>{character.species || 'Desconocida'}</p>
-            <dl className='character_list'>
-                <div className='character_item'>
-                    <dt>Origen</dt>
-                    <dd>{character.origin?.name || 'Desconocido'}</dd>
-                </div>
-                <div className='character_item'>
-                    <dt>Episodios donde aparece</dt>
-                    <dd>{character.episode?.length ?? 0}</dd>
-                </div>
-            </dl>
+
+            <div className='character_card_body'>
+                <h3 className='character_name'>{character.name}</h3>
+                <p className='character_species'>
+                    <UserRound size={16} aria-hidden='true' />
+                    {speciesLabel}
+                </p>
+                <dl className='character_list'>
+                    <div className='character_item'>
+                        <dt>
+                            <MapPin size={14} aria-hidden='true' />
+                            Origen
+                        </dt>
+                        <dd>{character.origin?.name || 'Desconocido'}</dd>
+                    </div>
+                    <div className='character_item character_item--episodes'>
+                        <dt>Episodios donde aparece</dt>
+                        <dd>{character.episode?.length ?? 0}</dd>
+                    </div>
+                </dl>
+            </div>
         </article>
     );
 };

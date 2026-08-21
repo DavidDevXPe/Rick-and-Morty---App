@@ -1,0 +1,308 @@
+.episode_highlight {
+    width: 100%;
+}
+
+.episode_highlight_hero {
+    position: relative;
+    display: grid;
+    width: min(100%, var(--rm-hero-max));
+    min-height: 212px;
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 28px;
+    margin: 0 auto 24px;
+    padding: 14px 31px;
+    overflow: hidden;
+    background: linear-gradient(105deg, var(--rm-hero-start) 0%, var(--rm-hero-mid) 47%, var(--rm-hero-end) 100%);
+    border: 1px solid var(--rm-border-accent);
+    border-radius: var(--rm-radius-lg);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28), inset 0 0 38px rgba(183, 242, 26, 0.018);
+}
+
+.episode_highlight_art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background:
+        linear-gradient(90deg, rgba(2, 11, 17, 0.97) 0%, rgba(3, 16, 24, 0.9) 25%, rgba(3, 16, 24, 0.48) 46%, rgba(3, 16, 24, 0.06) 72%),
+        url('../../assets/rick-morty/generated/episode-current-background.png') center 52% / cover no-repeat;
+    opacity: 0.96;
+    pointer-events: none;
+}
+
+.episode_highlight_art::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background:
+        linear-gradient(0deg, rgba(2, 9, 14, 0.62), transparent 48%),
+        linear-gradient(180deg, rgba(2, 9, 14, 0.1), transparent 30%);
+}
+
+.episode_highlight_media {
+    position: relative;
+    z-index: 2;
+    width: 200px;
+    height: 182px;
+    align-self: center;
+    overflow: hidden;
+    background: var(--rm-surface-hover);
+    border: 1px solid rgba(183, 242, 26, 0.24);
+    border-radius: 13px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.31);
+}
+
+.episode_highlight_media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.episode_highlight_media_placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: var(--rm-accent);
+    background:
+        radial-gradient(circle at center, rgba(183, 242, 26, 0.16), transparent 48%),
+        var(--rm-surface);
+}
+
+.episode_highlight_content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    padding-right: 22%;
+}
+
+.episode_highlight_badge {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 11px;
+    color: var(--rm-accent);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    background: rgba(5, 20, 25, 0.68);
+    border: 1px solid rgba(155, 212, 0, 0.34);
+    border-radius: var(--rm-radius-sm);
+}
+
+.episode_highlight_name {
+    max-width: 680px;
+    margin-top: 8px;
+    overflow: hidden;
+    color: var(--rm-text-on-dark);
+    font-size: clamp(1.65rem, 2.05vw, 2rem);
+    font-weight: 780;
+    line-height: 1.13;
+    letter-spacing: -0.035em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.episode_highlight_meta {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px 20px;
+    margin-top: 8px;
+    color: #d0d7d9;
+    font-size: 0.88rem;
+}
+
+.episode_highlight_meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.episode_highlight_code {
+    min-height: 30px;
+    padding: 4px 11px;
+    color: var(--rm-text-on-dark) !important;
+    font-weight: 760;
+    background: rgba(3, 15, 22, 0.7);
+    border: 1px solid var(--rm-border-accent);
+    border-radius: var(--rm-radius-sm);
+}
+
+.episode_highlight_controls {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.episode_highlight_controls .btn {
+    min-width: 146px;
+}
+
+.episode_highlight_controls .btn:last-child {
+    min-width: 164px;
+}
+
+:root[data-theme="light"] .episode_highlight_controls .btn--ghost {
+    color: var(--rm-text-on-dark);
+    background: rgba(4, 16, 25, 0.72);
+}
+
+.episode_highlight--error {
+    width: min(100%, var(--rm-hero-max));
+    margin: 0 auto 28px;
+}
+
+.episode_highlight--error .collection_state {
+    width: 100%;
+    min-height: 212px;
+    margin: 0;
+}
+
+.episode_highlight_hero--skeleton {
+    background: var(--rm-surface);
+}
+
+.episode_highlight_skeleton_media {
+    width: 200px;
+    height: 182px;
+    align-self: center;
+    border-radius: 13px;
+}
+
+.episode_highlight_skeleton_content {
+    display: flex;
+    width: min(100%, 620px);
+    justify-content: center;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.episode_highlight_skeleton_badge {
+    width: 145px;
+    height: 28px;
+}
+
+.episode_highlight_skeleton_title {
+    width: min(90%, 470px);
+    height: 34px;
+}
+
+.episode_highlight_skeleton_meta {
+    width: min(80%, 390px);
+    height: 22px;
+}
+
+.episode_highlight_skeleton_actions {
+    width: 326px;
+    max-width: 75%;
+    height: 43px;
+    margin-top: 5px;
+}
+
+.episode_highlight_skeleton_heading {
+    width: 230px;
+    height: 30px;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 1099px) {
+    .episode_highlight_hero {
+        grid-template-columns: 180px minmax(0, 1fr);
+        gap: 22px;
+        padding-inline: 24px;
+    }
+
+    .episode_highlight_media,
+    .episode_highlight_skeleton_media {
+        width: 180px;
+        height: 176px;
+    }
+
+    .episode_highlight_content {
+        padding-right: 10%;
+    }
+}
+
+@media (max-width: 799px) {
+    .episode_highlight_hero {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+        padding: 14px;
+    }
+
+    .episode_highlight_art {
+        inset: 0;
+        width: 100%;
+        height: auto;
+        background-position: 62% center;
+        opacity: 0.5;
+    }
+
+    .episode_highlight_media,
+    .episode_highlight_skeleton_media {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 8.4;
+    }
+
+    .episode_highlight_content {
+        padding: 0 5px 5px;
+    }
+
+    .episode_highlight_name {
+        white-space: normal;
+    }
+
+    .episode_highlight_controls {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .episode_highlight_controls .btn,
+    .episode_highlight_controls .btn:last-child {
+        min-width: 0;
+    }
+
+    .episode_highlight_skeleton_content {
+        padding: 4px;
+    }
+}
+
+@media (max-width: 549px) {
+    .episode_highlight_hero {
+        margin-bottom: 19px;
+        border-radius: var(--rm-radius-md);
+    }
+
+    .episode_highlight_name {
+        font-size: 1.48rem;
+    }
+
+    .episode_highlight_meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .episode_highlight_controls {
+        gap: 10px;
+        margin-top: 17px;
+    }
+}
+
+@media (max-width: 359px) {
+    .episode_highlight_controls {
+        grid-template-columns: 1fr;
+    }
+}
