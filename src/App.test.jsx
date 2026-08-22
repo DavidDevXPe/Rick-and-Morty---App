@@ -58,7 +58,11 @@ describe('App', () => {
 
     expect(await screen.findByTestId('characters-page')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Personajes' })).toHaveAttribute('aria-current', 'page');
-    expect((await screen.findByText('826')).closest('.header_count')).not.toHaveAttribute('title');
+    const characterCount = (await screen.findByText('826')).closest('.header_count');
+    expect(characterCount).not.toHaveAttribute('title');
+    expect(characterCount?.tagName).toBe('SPAN');
+    expect(characterCount).not.toHaveAttribute('contenteditable');
+    expect(characterCount?.querySelector('input, textarea')).toBeNull();
     await waitFor(() => expect(window.localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('es'));
   });
 

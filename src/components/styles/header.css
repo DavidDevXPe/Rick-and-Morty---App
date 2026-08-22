@@ -114,9 +114,19 @@
     gap: 13px;
     padding: 7px 18px;
     color: var(--rm-accent-on-dark);
+    cursor: default;
+    user-select: none;
     background: rgba(5, 17, 24, 0.74);
     border: 1px solid rgba(155, 212, 0, 0.22);
     border-radius: var(--rm-radius-lg);
+}
+
+.header_count > span,
+.header_count strong,
+.header_count small,
+.header_count svg {
+    cursor: default;
+    user-select: none;
 }
 
 :root[data-theme="light"] .header_count {
