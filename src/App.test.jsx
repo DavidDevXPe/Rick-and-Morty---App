@@ -58,6 +58,7 @@ describe('App', () => {
 
     expect(await screen.findByTestId('characters-page')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Personajes' })).toHaveAttribute('aria-current', 'page');
+    expect((await screen.findByText('826')).closest('.header_count')).not.toHaveAttribute('title');
     await waitFor(() => expect(window.localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('es'));
   });
 

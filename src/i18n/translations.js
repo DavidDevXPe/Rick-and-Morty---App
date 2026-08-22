@@ -21,7 +21,6 @@ const es = {
     'nav.locations': 'Ubicaciones',
     'nav.ariaLabel': 'Secciones principales',
 
-    'header.totalCharactersTitle': 'Total de personajes en la API',
     'header.characters': 'Personajes',
     'header.themeToLight': 'Cambiar a tema claro',
     'header.themeToDark': 'Cambiar a tema oscuro',
@@ -191,7 +190,6 @@ const en = {
     'nav.locations': 'Locations',
     'nav.ariaLabel': 'Main sections',
 
-    'header.totalCharactersTitle': 'Total characters in the API',
     'header.characters': 'Characters',
     'header.themeToLight': 'Switch to light theme',
     'header.themeToDark': 'Switch to dark theme',

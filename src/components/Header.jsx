@@ -148,7 +148,7 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                 </nav>
 
                 <div className='header_actions'>
-                    <span className='header_count' title={t('header.totalCharactersTitle')}>
+                    <span className='header_count'>
                         <UsersRound size={24} strokeWidth={1.8} aria-hidden='true' />
                         <span>
                             <strong>{data ? new Intl.NumberFormat(locale).format(data.info.count) : '—'}</strong>
