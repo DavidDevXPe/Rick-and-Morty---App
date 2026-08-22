@@ -1,38 +1,48 @@
 import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { AlertTriangle, ChevronDown, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../i18n/useLanguage';
 import CharacterCard from './CharacterCard';
 import CharacterCardSkeleton from './CharacterCardSkeleton';
 import CollectionState from './CollectionState';
 import LoadMoreButton from './LoadMoreButton';
 
-const SORTERS = {
-    az: (first, second) => first.name.localeCompare(second.name, 'es'),
-    episodes: (first, second) => (second.episode?.length ?? 0) - (first.episode?.length ?? 0),
-    za: (first, second) => second.name.localeCompare(first.name, 'es'),
+const sortCharacters = (first, second, sortOrder, locale) => {
+    if (sortOrder === 'episodes') {
+        return (second.episode?.length ?? 0) - (first.episode?.length ?? 0);
+    }
+
+    const comparison = first.name.localeCompare(second.name, locale);
+    return sortOrder === 'za' ? -comparison : comparison;
 };
 
 const CharacterGrid = ({
     characters,
-    emptyActionLabel = 'Limpiar filtros',
-    emptyMessage = 'No encontramos personajes con estos filtros.',
+    emptyActionLabel = null,
+    emptyMessage = null,
     error = null,
     hasMore = false,
     isLoading = false,
     isFavorite,
-    loadMoreLabel = 'Cargar más personajes',
+    loadMoreLabel = null,
     onClear,
     onLoadMore,
     onRetry,
     onToggleFavorite,
     title,
 }) => {
+    const { locale, t } = useLanguage();
     const [sortOrder, setSortOrder] = useState('az');
     const sortedCharacters = useMemo(
-        () => [...characters].sort(SORTERS[sortOrder]),
-        [characters, sortOrder],
+        () => [...characters].sort((first, second) => (
+            sortCharacters(first, second, sortOrder, locale)
+        )),
+        [characters, locale, sortOrder],
     );
     const isInitialLoading = isLoading && characters.length === 0;
+    const resolvedEmptyActionLabel = emptyActionLabel ?? t('characters.clearFilters');
+    const resolvedEmptyMessage = emptyMessage ?? t('characters.emptyMessage');
+    const resolvedLoadMoreLabel = loadMoreLabel ?? t('characters.loadMore');
 
     return (
         <section className='character_collection' aria-labelledby={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}>
@@ -47,12 +57,12 @@ const CharacterGrid = ({
                 </div>
 
                 <label className='sort_control'>
-                    <span>Ordenar por</span>
+                    <span>{t('characters.sortBy')}</span>
                     <span className='select_control'>
                         <select value={sortOrder} onChange={(event) => setSortOrder(event.target.value)}>
                             <option value='az'>A - Z</option>
                             <option value='za'>Z - A</option>
-                            <option value='episodes'>Más episodios</option>
+                            <option value='episodes'>{t('characters.moreEpisodes')}</option>
                         </select>
                         <ChevronDown size={16} aria-hidden='true' />
                     </span>
@@ -61,7 +71,7 @@ const CharacterGrid = ({
 
             {isInitialLoading && (
                 <>
-                    <span className='sr_only' role='status'>Cargando personajes…</span>
+                    <span className='sr_only' role='status'>{t('characters.loading')}</span>
                     <div className='character_grid' aria-hidden='true'>
                         {Array.from({ length: 5 }, (_, index) => <CharacterCardSkeleton key={index} />)}
                     </div>
@@ -71,8 +81,8 @@ const CharacterGrid = ({
             {!isInitialLoading && error && characters.length === 0 && (
                 <CollectionState
                     kind='error'
-                    title='No pudimos cargar los personajes'
-                    message='La API no respondió como esperábamos. Intenta nuevamente.'
+                    title={t('characters.errorTitle')}
+                    message={t('characters.errorMessage')}
                     onAction={onRetry}
                 />
             )}
@@ -80,9 +90,9 @@ const CharacterGrid = ({
             {!isInitialLoading && !error && characters.length === 0 && (
                 <CollectionState
                     kind='empty'
-                    title='Sin resultados en este universo'
-                    message={emptyMessage}
-                    actionLabel={emptyActionLabel}
+                    title={t('characters.emptyTitle')}
+                    message={resolvedEmptyMessage}
+                    actionLabel={resolvedEmptyActionLabel}
                     onAction={onClear}
                 />
             )}
@@ -103,11 +113,11 @@ const CharacterGrid = ({
             {error && characters.length > 0 && (
                 <div className='collection_inline_error' role='alert'>
                     <AlertTriangle size={18} aria-hidden='true' />
-                    <span>No pudimos cargar más personajes.</span>
+                    <span>{t('characters.loadMoreError')}</span>
                     {onRetry && (
                         <button type='button' onClick={onRetry}>
                             <RefreshCw size={15} aria-hidden='true' />
-                            Reintentar
+                            {t('common.retry')}
                         </button>
                     )}
                 </div>
@@ -116,7 +126,7 @@ const CharacterGrid = ({
             {hasMore && onLoadMore && (
                 <LoadMoreButton
                     isLoading={isLoading}
-                    label={loadMoreLabel}
+                    label={resolvedLoadMoreLabel}
                     onClick={onLoadMore}
                 />
             )}

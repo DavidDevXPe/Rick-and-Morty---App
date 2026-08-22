@@ -1,18 +1,23 @@
 import PropTypes from 'prop-types';
 import { Heart, MapPin, UserRound } from 'lucide-react';
-import { SPECIES_LABELS } from '../config';
+import { useLanguage } from '../i18n/useLanguage';
 import StatusBadge from './StatusBadge';
 import './styles/characterCard.css';
 
 const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
-    const speciesLabel = SPECIES_LABELS[character.species] ?? character.species ?? 'Desconocida';
+    const { t } = useLanguage();
+    const speciesKey = `species.${character.species}`;
+    const translatedSpecies = character.species ? t(speciesKey) : null;
+    const speciesLabel = !character.species
+        ? t('common.unknownFeminine')
+        : translatedSpecies === speciesKey ? character.species : translatedSpecies;
 
     return (
         <article className='character_card'>
             <figure className='character_photo'>
                 <img
                     src={character.image}
-                    alt={`Retrato de ${character.name}`}
+                    alt={t('character.imageAlt', { name: character.name })}
                     width='300'
                     height='225'
                     loading='lazy'
@@ -24,7 +29,9 @@ const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
                     className={`character_favorite${isFavorite ? ' character_favorite--active' : ''}`}
                     onClick={() => onToggleFavorite(character.id)}
                     aria-pressed={isFavorite}
-                    aria-label={isFavorite ? `Quitar ${character.name} de favoritos` : `Agregar ${character.name} a favoritos`}
+                    aria-label={isFavorite
+                        ? t('character.removeFavorite', { name: character.name })
+                        : t('character.addFavorite', { name: character.name })}
                 >
                     <Heart size={22} strokeWidth={2} aria-hidden='true' />
                 </button>
@@ -40,12 +47,12 @@ const CharacterCard = ({ character, isFavorite, onToggleFavorite }) => {
                     <div className='character_item'>
                         <dt>
                             <MapPin size={14} aria-hidden='true' />
-                            Origen
+                            {t('character.origin')}
                         </dt>
-                        <dd>{character.origin?.name || 'Desconocido'}</dd>
+                        <dd>{character.origin?.name || t('common.unknown')}</dd>
                     </div>
                     <div className='character_item character_item--episodes'>
-                        <dt>Episodios donde aparece</dt>
+                        <dt>{t('character.episodesAppearing')}</dt>
                         <dd>{character.episode?.length ?? 0}</dd>
                     </div>
                 </dl>

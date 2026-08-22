@@ -1,25 +1,26 @@
 import PropTypes from 'prop-types';
 import { Dna, MapPin, Tv } from 'lucide-react';
-import { SPECIES_LABELS } from '../config';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/residentCard.css';
 
-const STATUS_LABELS = {
-    alive: 'Vivo',
-    dead: 'Muerto',
-    unknown: 'Desconocido',
-};
-
 const ResidentCard = ({ resident }) => {
+    const { t } = useLanguage();
     const statusClass = resident.status.toLowerCase();
-    const statusLabel = STATUS_LABELS[statusClass] ?? resident.status;
-    const speciesLabel = SPECIES_LABELS[resident.species] ?? resident.species ?? 'Desconocida';
+    const statusKey = `status.${statusClass}`;
+    const translatedStatus = t(statusKey);
+    const statusLabel = translatedStatus === statusKey ? resident.status : translatedStatus;
+    const speciesKey = `species.${resident.species}`;
+    const translatedSpecies = resident.species ? t(speciesKey) : null;
+    const speciesLabel = !resident.species
+        ? t('common.unknownFeminine')
+        : translatedSpecies === speciesKey ? resident.species : translatedSpecies;
 
     return (
         <article className='resident'>
             <figure className='resident_photo'>
                 <img
                     src={resident.image}
-                    alt={`Retrato de ${resident.name}`}
+                    alt={t('resident.imageAlt', { name: resident.name })}
                     width='300'
                     height='225'
                     loading='lazy'
@@ -27,7 +28,7 @@ const ResidentCard = ({ resident }) => {
                 />
                 <figcaption className={`resident_status status_badge status_badge--${statusClass}`}>
                     <span className='status_badge_dot' aria-hidden='true' />
-                    <span>Estado: {statusLabel}</span>
+                    <span>{t('resident.status')}: {statusLabel}</span>
                 </figcaption>
             </figure>
 
@@ -37,21 +38,21 @@ const ResidentCard = ({ resident }) => {
                     <div className='resident_item'>
                         <dt>
                             <Dna size={15} aria-hidden='true' />
-                            Especie
+                            {t('resident.species')}
                         </dt>
                         <dd>{speciesLabel}</dd>
                     </div>
                     <div className='resident_item'>
                         <dt>
                             <MapPin size={15} aria-hidden='true' />
-                            Origen
+                            {t('resident.origin')}
                         </dt>
-                        <dd>{resident.origin?.name || 'Desconocido'}</dd>
+                        <dd>{resident.origin?.name || t('common.unknown')}</dd>
                     </div>
                     <div className='resident_item resident_item--episodes'>
                         <dt>
                             <Tv size={15} aria-hidden='true' />
-                            Episodios
+                            {t('resident.episodes')}
                         </dt>
                         <dd>{resident.episode?.length ?? 0}</dd>
                     </div>

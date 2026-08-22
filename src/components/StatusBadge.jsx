@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types';
-import { STATUS_LABELS } from '../config';
+import { useLanguage } from '../i18n/useLanguage';
 
 const StatusBadge = ({ status }) => {
+    const { t } = useLanguage();
     const normalizedStatus = status?.toLowerCase() || 'unknown';
-    const label = STATUS_LABELS[normalizedStatus] ?? status ?? STATUS_LABELS.unknown;
+    const translationKey = `status.${normalizedStatus}`;
+    const translatedStatus = t(translationKey);
+    const label = translatedStatus === translationKey
+        ? status ?? t('status.unknown')
+        : translatedStatus;
 
     return (
         <span className={`status_badge status_badge--${normalizedStatus}`}>

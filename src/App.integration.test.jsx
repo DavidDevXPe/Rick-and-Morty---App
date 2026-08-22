@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
-import { API_BASE_URL } from './config';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { API_BASE_URL, PROFILE_STORAGE_KEY } from './config';
 import {
   createCharacter,
   createEpisode,
@@ -44,6 +44,14 @@ const buildFetchMock = () => vi.fn((url) => {
 });
 
 describe('App (integration)', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify({
+      name: 'Summer',
+      version: 'rick',
+    }));
+  });
+
   it('renders every tab end-to-end without mocked pages', async () => {
     const user = userEvent.setup();
     vi.stubGlobal('fetch', buildFetchMock());

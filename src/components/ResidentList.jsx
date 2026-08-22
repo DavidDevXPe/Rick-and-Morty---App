@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { AlertTriangle, MapPin, RefreshCw, Users } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import useFetch from '../hooks/useFetch';
+import { useLanguage } from '../i18n/useLanguage';
 import ResidentCard from './ResidentCard';
 
 const getResidentId = (residentUrl) => residentUrl.split('/').filter(Boolean).at(-1);
@@ -31,6 +32,7 @@ ResidentSkeleton.propTypes = {
 };
 
 const ResidentList = ({ residentUrls }) => {
+    const { t } = useLanguage();
     const residentIds = residentUrls.map(getResidentId).filter(Boolean);
     const residentsUrl = residentIds.length > 0
         ? `${API_BASE_URL}/character/${residentIds.join(',')}`
@@ -44,8 +46,8 @@ const ResidentList = ({ residentUrls }) => {
                     <MapPin size={25} />
                 </span>
                 <div>
-                    <h3>Ubicación deshabitada</h3>
-                    <p>No hay residentes conocidos en esta ubicación.</p>
+                    <h3>{t('residents.uninhabitedTitle')}</h3>
+                    <p>{t('residents.uninhabitedMessage')}</p>
                 </div>
             </div>
         );
@@ -54,8 +56,8 @@ const ResidentList = ({ residentUrls }) => {
     if (isLoading) {
         return (
             <section className='resident_section resident_loading' aria-labelledby='residents-loading-title'>
-                <h2 id='residents-loading-title' className='sr_only'>Residentes</h2>
-                <span className='sr_only' role='status'>Cargando residentes…</span>
+                <h2 id='residents-loading-title' className='sr_only'>{t('residents.title')}</h2>
+                <span className='sr_only' role='status'>{t('residents.loading')}</span>
                 <div className='resident_header resident_header--loading' aria-hidden='true'>
                     <span className='skeleton resident_header_skeleton' />
                 </div>
@@ -75,12 +77,12 @@ const ResidentList = ({ residentUrls }) => {
                     <AlertTriangle size={25} />
                 </span>
                 <div>
-                    <h3>Residentes fuera de alcance</h3>
-                    <p>No se pudieron cargar los residentes.</p>
+                    <h3>{t('residents.unreachableTitle')}</h3>
+                    <p>{t('residents.loadError')}</p>
                 </div>
                 <button type='button' className='btn' onClick={refetch}>
                     <RefreshCw size={17} aria-hidden='true' />
-                    Reintentar
+                    {t('common.retry')}
                 </button>
             </div>
         );
@@ -95,12 +97,12 @@ const ResidentList = ({ residentUrls }) => {
                     <AlertTriangle size={25} />
                 </span>
                 <div>
-                    <h3>Registro incompleto</h3>
-                    <p>La respuesta de residentes llegó vacía o inválida.</p>
+                    <h3>{t('residents.incompleteTitle')}</h3>
+                    <p>{t('residents.incompleteMessage')}</p>
                 </div>
                 <button type='button' className='btn' onClick={refetch}>
                     <RefreshCw size={17} aria-hidden='true' />
-                    Reintentar
+                    {t('common.retry')}
                 </button>
             </div>
         );
@@ -110,12 +112,12 @@ const ResidentList = ({ residentUrls }) => {
         <section className='resident_section' aria-labelledby='residents-title'>
             <div className='resident_header'>
                 <div>
-                    <span className='resident_eyebrow'>Población registrada</span>
-                    <h2 id='residents-title' className='section_title section_title--accent'>Residentes</h2>
+                    <span className='resident_eyebrow'>{t('residents.registeredPopulation')}</span>
+                    <h2 id='residents-title' className='section_title section_title--accent'>{t('residents.title')}</h2>
                 </div>
                 <span className='resident_count'>
                     <Users size={17} aria-hidden='true' />
-                    {residents.length} {residents.length === 1 ? 'residente' : 'residentes'} en esta página
+                    {t('residents.pageCount', { count: residents.length })}
                 </span>
             </div>
             <div className='resident_grid'>

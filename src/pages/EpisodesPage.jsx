@@ -13,6 +13,7 @@ import {
 import EpisodeCard from '../components/EpisodeCard';
 import { API_BASE_URL } from '../config';
 import usePaginatedList from '../hooks/usePaginatedList';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/episodesPage.css';
 
 const SKELETON_COUNT = 8;
@@ -32,6 +33,7 @@ const EpisodeCardSkeleton = () => (
 );
 
 const EpisodesPage = ({ onSelectEpisode }) => {
+    const { t } = useLanguage();
     const [searchValue, setSearchValue] = useState('');
     const [submittedName, setSubmittedName] = useState('');
 
@@ -69,20 +71,20 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                 <div className='episodes_intro_icon' aria-hidden='true'>
                     <Film size={24} strokeWidth={1.8} />
                 </div>
-                <p className='episodes_eyebrow'>Archivo interdimensional</p>
-                <h1 className='section_title'>Episodios</h1>
+                <p className='episodes_eyebrow'>{t('episodes.archiveEyebrow')}</p>
+                <h1 className='section_title'>{t('episodes.title')}</h1>
                 <p className='episodes_intro_copy'>
-                    Recorre todas las temporadas y encuentra cada aventura del multiverso.
+                    {t('episodes.intro')}
                 </p>
             </header>
 
             <form className='episodes_search' onSubmit={handleSubmit} role='search'>
-                <label htmlFor='episode-search' className='sr_only'>Buscar episodio</label>
+                <label htmlFor='episode-search' className='sr_only'>{t('episodes.searchLabel')}</label>
                 <Search className='episodes_search_icon' size={21} aria-hidden='true' />
                 <input
                     id='episode-search'
                     type='search'
-                    placeholder='Buscar episodio...'
+                    placeholder={t('episodes.searchPlaceholder')}
                     value={searchValue}
                     onChange={(event) => setSearchValue(event.target.value)}
                     autoComplete='off'
@@ -92,14 +94,14 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                         type='button'
                         className='episodes_search_clear'
                         onClick={() => setSearchValue('')}
-                        aria-label='Borrar búsqueda'
+                        aria-label={t('episodes.clearSearchAria')}
                     >
                         <X size={18} aria-hidden='true' />
                     </button>
                 )}
                 <button className='btn episodes_search_submit' type='submit'>
                     <Search size={18} aria-hidden='true' />
-                    <span>Buscar</span>
+                    <span>{t('common.search')}</span>
                 </button>
             </form>
 
@@ -107,13 +109,15 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                 <div>
                     <p className='episodes_section_kicker'>Rick and Morty API</p>
                     <h2 className='section_title section_title--accent'>
-                        {submittedName ? `Resultados para “${submittedName}”` : 'Todos los episodios'}
+                        {submittedName
+                            ? t('episodes.resultsFor', { query: submittedName })
+                            : t('episodes.all')}
                     </h2>
                 </div>
                 {!isInitialLoading && items.length > 0 && (
                     <span className='episodes_result_count' aria-live='polite'>
                         <Sparkles size={15} aria-hidden='true' />
-                        {items.length} cargados
+                        {t('episodes.loadedCount', { count: items.length })}
                     </span>
                 )}
             </div>
@@ -122,10 +126,10 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                 <div
                     className='episodes_grid'
                     role='status'
-                    aria-label='Cargando episodios'
+                    aria-label={t('episodes.loadingLabel')}
                     aria-live='polite'
                 >
-                    <span className='sr_only'>Cargando episodios…</span>
+                    <span className='sr_only'>{t('episodes.loadingStatus')}</span>
                     {Array.from({ length: SKELETON_COUNT }, (_, index) => (
                         <EpisodeCardSkeleton key={index} />
                     ))}
@@ -138,12 +142,12 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                         <RadioTower size={26} />
                     </span>
                     <div>
-                        <h3>No pudimos abrir el archivo interdimensional</h3>
-                        <p>No se pudieron cargar los episodios. Revisa tu conexión e inténtalo otra vez.</p>
+                        <h3>{t('episodes.errorTitle')}</h3>
+                        <p>{t('episodes.errorMessage')}</p>
                     </div>
                     <button type='button' className='btn' onClick={refetch}>
                         <RefreshCw size={17} aria-hidden='true' />
-                        Reintentar
+                        {t('common.retry')}
                     </button>
                 </div>
             )}
@@ -154,13 +158,13 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                         <Film size={26} />
                     </span>
                     <div>
-                        <h3>No encontramos ese episodio</h3>
-                        <p>Prueba con otro nombre o vuelve a explorar el archivo completo.</p>
+                        <h3>{t('episodes.emptyTitle')}</h3>
+                        <p>{t('episodes.emptyMessage')}</p>
                     </div>
                     {submittedName && (
                         <button type='button' className='btn btn--ghost' onClick={handleClearSearch}>
                             <X size={17} aria-hidden='true' />
-                            Limpiar búsqueda
+                            {t('episodes.clearSearch')}
                         </button>
                     )}
                 </div>
@@ -177,8 +181,8 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                     {error && (
                         <div className='episodes_inline_error' role='alert'>
                             <RadioTower size={18} aria-hidden='true' />
-                            <span>No se pudieron cargar más episodios.</span>
-                            <button type='button' onClick={refetch}>Reintentar</button>
+                            <span>{t('episodes.loadMoreError')}</span>
+                            <button type='button' onClick={refetch}>{t('common.retry')}</button>
                         </div>
                     )}
 
@@ -190,7 +194,7 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                                 onClick={loadMore}
                                 disabled={isLoading}
                             >
-                                <span>{isLoading ? 'Cargando…' : 'Cargar más episodios'}</span>
+                                <span>{isLoading ? t('common.loading') : t('episodes.loadMore')}</span>
                                 {isLoading
                                     ? <LoaderCircle className='spin' size={20} aria-hidden='true' />
                                     : <ArrowDown size={20} aria-hidden='true' />}

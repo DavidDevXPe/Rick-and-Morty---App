@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import useFetch from '../hooks/useFetch';
+import { useLanguage } from '../i18n/useLanguage';
 import { formatAirDate } from '../utils/formatters';
 import CharacterCardSkeleton from './CharacterCardSkeleton';
 import CharacterGrid from './CharacterGrid';
@@ -18,9 +19,12 @@ import './styles/episodeHighlight.css';
 const CHARACTERS_STEP = 5;
 const getCharacterId = (characterUrl) => characterUrl.split('/').filter(Boolean).at(-1);
 
-const EpisodeHighlightSkeleton = () => (
-    <section className='episode_highlight' aria-busy='true' aria-label='Cargando episodio actual'>
-        <span className='sr_only' role='status'>Cargando episodio y personajes…</span>
+const EpisodeHighlightSkeleton = () => {
+    const { t } = useLanguage();
+
+    return (
+        <section className='episode_highlight' aria-busy='true' aria-label={t('episode.loadingLabel')}>
+        <span className='sr_only' role='status'>{t('episode.loadingStatus')}</span>
         <div className='episode_highlight_hero episode_highlight_hero--skeleton' aria-hidden='true'>
             <div className='skeleton episode_highlight_skeleton_media' />
             <div className='episode_highlight_skeleton_content'>
@@ -36,8 +40,9 @@ const EpisodeHighlightSkeleton = () => (
         <div className='character_grid' aria-hidden='true'>
             {Array.from({ length: 5 }, (_, index) => <CharacterCardSkeleton key={index} />)}
         </div>
-    </section>
-);
+        </section>
+    );
+};
 
 const EpisodeHighlight = ({
     canGoNext,
@@ -51,6 +56,7 @@ const EpisodeHighlight = ({
     onRetryEpisode,
     onToggleFavorite,
 }) => {
+    const { language, t } = useLanguage();
     const [visibleCount, setVisibleCount] = useState(CHARACTERS_STEP);
     const characterUrls = episode?.characters ?? [];
     const visibleIds = characterUrls.slice(0, visibleCount).map(getCharacterId).filter(Boolean);
@@ -75,8 +81,8 @@ const EpisodeHighlight = ({
             <section className='episode_highlight episode_highlight--error'>
                 <CollectionState
                     kind='error'
-                    title='El episodio se perdió entre dimensiones'
-                    message='No pudimos cargar el episodio actual. Comprueba tu conexión e inténtalo de nuevo.'
+                    title={t('episode.errorTitle')}
+                    message={t('episode.errorMessage')}
                     onAction={onRetryEpisode}
                 />
             </section>
@@ -91,7 +97,10 @@ const EpisodeHighlight = ({
                     {featuredCharacter ? (
                         <img
                             src={featuredCharacter.image}
-                            alt={`Retrato de ${featuredCharacter.name}, personaje de ${episode.name}`}
+                            alt={t('episode.imageAlt', {
+                                character: featuredCharacter.name,
+                                episode: episode.name,
+                            })}
                             width='300'
                             height='300'
                         />
@@ -105,27 +114,27 @@ const EpisodeHighlight = ({
                 <div className='episode_highlight_content'>
                     <span className='episode_highlight_badge'>
                         <Sparkles size={14} aria-hidden='true' />
-                        Episodio actual
+                        {t('episode.current')}
                     </span>
                     <h1 id='episode-highlight-title' className='episode_highlight_name'>{episode.name}</h1>
                     <div className='episode_highlight_meta'>
                         <span className='episode_highlight_code'>{episode.episode}</span>
                         <span>
                             <CalendarDays size={17} aria-hidden='true' />
-                            Emisión: {formatAirDate(episode.air_date)}
+                            {t('episode.airDate')}: {formatAirDate(episode.air_date, language) || t('common.unknownDate')}
                         </span>
                         <span>
                             <UsersRound size={18} aria-hidden='true' />
-                            {characterUrls.length} personajes
+                            {t('episode.characterCount', { count: characterUrls.length })}
                         </span>
                     </div>
                     <div className='episode_highlight_controls'>
                         <button type='button' className='btn btn--ghost' onClick={onPrev} disabled={!canGoPrev}>
                             <ArrowLeft size={19} aria-hidden='true' />
-                            Anterior
+                            {t('common.previous')}
                         </button>
                         <button type='button' className='btn' onClick={onNext} disabled={!canGoNext}>
-                            Siguiente
+                            {t('common.next')}
                             <ArrowRight size={19} aria-hidden='true' />
                         </button>
                     </div>
@@ -134,7 +143,7 @@ const EpisodeHighlight = ({
 
             <CharacterGrid
                 characters={characters}
-                emptyMessage='Este episodio no tiene personajes registrados.'
+                emptyMessage={t('episode.emptyCharacters')}
                 error={charactersError}
                 hasMore={!charactersError && visibleCount < characterUrls.length}
                 isFavorite={(id) => favoriteIds.includes(id)}
@@ -142,7 +151,7 @@ const EpisodeHighlight = ({
                 onLoadMore={() => setVisibleCount((count) => count + CHARACTERS_STEP)}
                 onRetry={refetchCharacters}
                 onToggleFavorite={onToggleFavorite}
-                title='Personajes del episodio'
+                title={t('episode.charactersTitle')}
             />
         </section>
     );

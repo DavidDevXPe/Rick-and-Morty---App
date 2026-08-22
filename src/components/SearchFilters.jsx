@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import { ChevronDown, Filter, Search } from 'lucide-react';
-import { GENDER_OPTIONS, SPECIES_LABELS, SPECIES_OPTIONS, STATUS_OPTIONS } from '../config';
+import { GENDER_OPTIONS, SPECIES_OPTIONS, STATUS_OPTIONS } from '../config';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/searchFilters.css';
 
 const SearchFilters = ({ filters, hasActiveFilters, onChange, onClear, onSubmit }) => {
+    const { t } = useLanguage();
     const handleSubmit = (event) => {
         event.preventDefault();
         onSubmit();
@@ -16,27 +18,27 @@ const SearchFilters = ({ filters, hasActiveFilters, onChange, onClear, onSubmit 
     return (
         <form className='search_filters' onSubmit={handleSubmit} role='search'>
             <div className='search_filters_input'>
-                <label htmlFor='character-search' className='sr_only'>Buscar personaje</label>
+                <label htmlFor='character-search' className='sr_only'>{t('filters.searchLabel')}</label>
                 <Search className='search_filters_search_icon' size={24} aria-hidden='true' />
                 <input
                     id='character-search'
                     type='search'
-                    placeholder='Buscar personaje...'
+                    placeholder={t('filters.searchPlaceholder')}
                     value={filters.name}
                     onChange={handleFieldChange('name')}
                     autoComplete='off'
                 />
-                <button className='btn search_filters_submit' type='submit'>Buscar</button>
+                <button className='btn search_filters_submit' type='submit'>{t('common.search')}</button>
             </div>
 
             <div className='search_filters_selects'>
                 <label className='search_filters_field'>
-                    <span>Estado</span>
+                    <span>{t('filters.status')}</span>
                     <span className='select_control'>
                         <select value={filters.status} onChange={handleFieldChange('status')}>
-                            <option value=''>Todos</option>
-                            {STATUS_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>{option.label}</option>
+                            <option value=''>{t('filters.all')}</option>
+                            {STATUS_OPTIONS.map((status) => (
+                                <option key={status} value={status}>{t(`status.${status}`)}</option>
                             ))}
                         </select>
                         <ChevronDown size={18} aria-hidden='true' />
@@ -44,12 +46,12 @@ const SearchFilters = ({ filters, hasActiveFilters, onChange, onClear, onSubmit 
                 </label>
 
                 <label className='search_filters_field'>
-                    <span>Especie</span>
+                    <span>{t('filters.species')}</span>
                     <span className='select_control'>
                         <select value={filters.species} onChange={handleFieldChange('species')}>
-                            <option value=''>Todas</option>
+                            <option value=''>{t('filters.allFeminine')}</option>
                             {SPECIES_OPTIONS.map((species) => (
-                                <option key={species} value={species}>{SPECIES_LABELS[species] ?? species}</option>
+                                <option key={species} value={species}>{t(`species.${species}`)}</option>
                             ))}
                         </select>
                         <ChevronDown size={18} aria-hidden='true' />
@@ -57,12 +59,12 @@ const SearchFilters = ({ filters, hasActiveFilters, onChange, onClear, onSubmit 
                 </label>
 
                 <label className='search_filters_field'>
-                    <span>Género</span>
+                    <span>{t('filters.gender')}</span>
                     <span className='select_control'>
                         <select value={filters.gender} onChange={handleFieldChange('gender')}>
-                            <option value=''>Todos</option>
-                            {GENDER_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>{option.label}</option>
+                            <option value=''>{t('filters.all')}</option>
+                            {GENDER_OPTIONS.map((gender) => (
+                                <option key={gender} value={gender}>{t(`gender.${gender}`)}</option>
                             ))}
                         </select>
                         <ChevronDown size={18} aria-hidden='true' />
@@ -73,10 +75,10 @@ const SearchFilters = ({ filters, hasActiveFilters, onChange, onClear, onSubmit 
                     type='button'
                     className='btn btn--ghost search_filters_clear'
                     onClick={onClear}
-                    title={hasActiveFilters ? 'Restablecer todos los filtros' : 'Los filtros ya están limpios'}
+                    title={hasActiveFilters ? t('filters.resetTitle') : t('filters.alreadyClearTitle')}
                 >
                     <Filter size={18} aria-hidden='true' />
-                    Limpiar filtros
+                    {t('filters.clear')}
                 </button>
             </div>
         </form>

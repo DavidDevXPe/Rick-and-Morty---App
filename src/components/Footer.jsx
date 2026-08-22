@@ -1,10 +1,14 @@
 import { Code2, Github, Heart } from 'lucide-react';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/footer.css';
 
 const rmPortalMark = `${import.meta.env.BASE_URL}rm-portal-mark.png`;
 
-const Footer = () => (
-    <footer className='footer'>
+const Footer = () => {
+    const { t } = useLanguage();
+
+    return (
+        <footer className='footer'>
         <div className='footer_inner'>
             <div className='footer_brand'>
                 <img
@@ -19,17 +23,17 @@ const Footer = () => (
                 />
                 <div>
                     <p className='footer_title'>Rick and Morty API</p>
-                    <p className='footer_subtitle'>Información en tiempo real desde la API oficial</p>
+                    <p className='footer_subtitle'>{t('footer.liveInfo')}</p>
                 </div>
             </div>
 
             <p className='footer_made'>
-                Hecho con
-                <Heart size={18} fill='currentColor' aria-label='amor' />
-                por fans de Rick and Morty
+                {t('footer.madeWith')}
+                <Heart size={18} fill='currentColor' aria-label={t('footer.love')} />
+                {t('footer.byFans')}
             </p>
 
-            <nav className='footer_links' aria-label='Enlaces del proyecto'>
+            <nav className='footer_links' aria-label={t('footer.links')}>
                 <a
                     className='footer_icon_link'
                     href='https://github.com/rickandmortyapi'
@@ -45,7 +49,7 @@ const Footer = () => (
                     href='https://rickandmortyapi.com'
                     target='_blank'
                     rel='noreferrer'
-                    aria-label='API de Rick and Morty'
+                    aria-label={t('footer.apiLabel')}
                 >
                     API
                 </a>
@@ -54,14 +58,15 @@ const Footer = () => (
                     href='https://rickandmortyapi.com/documentation'
                     target='_blank'
                     rel='noreferrer'
-                    aria-label='Documentación de la API'
-                    title='Documentación'
+                    aria-label={t('footer.docsLabel')}
+                    title={t('footer.docsTitle')}
                 >
                     <Code2 size={23} aria-hidden='true' />
                 </a>
             </nav>
         </div>
-    </footer>
-);
+        </footer>
+    );
+};
 
 export default Footer;

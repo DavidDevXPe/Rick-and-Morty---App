@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/pagination.css';
 
 const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
+    const { t } = useLanguage();
     const handlePrev = () => {
         setCurrentPage((page) => Math.max(1, page - 1));
     };
@@ -12,7 +14,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
     };
 
     return (
-        <nav className='pagination' aria-label='Páginas de residentes'>
+        <nav className='pagination' aria-label={t('pagination.ariaLabel')}>
             <button
                 type='button'
                 className='btn btn--ghost'
@@ -20,10 +22,10 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
                 disabled={currentPage <= 1}
             >
                 <ArrowLeft size={18} aria-hidden='true' />
-                Anterior
+                {t('common.previous')}
             </button>
             <span className='pagination_status' aria-live='polite' aria-atomic='true'>
-                Página {currentPage} de {totalPages}
+                {t('pagination.status', { current: currentPage, total: totalPages })}
             </span>
             <button
                 type='button'
@@ -31,7 +33,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
                 onClick={handleNext}
                 disabled={currentPage >= totalPages}
             >
-                Siguiente
+                {t('common.next')}
                 <ArrowRight size={18} aria-hidden='true' />
             </button>
         </nav>

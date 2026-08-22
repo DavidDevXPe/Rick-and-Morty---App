@@ -10,23 +10,27 @@ import {
     RESIDENTS_PER_PAGE,
 } from '../config';
 import useFetch from '../hooks/useFetch';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/locationsPage.css';
 
 const getRandomLocationId = () => (
     Math.floor(Math.random() * (MAX_LOCATION_ID - MIN_LOCATION_ID + 1)) + MIN_LOCATION_ID
 );
 
-const getLocationErrorMessage = (error, locationId) => {
+const getLocationErrorMessage = (error, locationId, t) => {
     if (error?.status === 404) {
-        return `No se encontró la ubicación ${locationId}.`;
+        return t('locations.notFound', { id: locationId });
     }
 
-    return 'No se pudo cargar la ubicación. Verifica tu conexión e intenta de nuevo.';
+    return t('locations.loadError');
 };
 
-const LocationSkeleton = () => (
-    <section className='location_skeleton' role='status' aria-live='polite'>
-        <span className='sr_only'>Cargando ubicación…</span>
+const LocationSkeleton = () => {
+    const { t } = useLanguage();
+
+    return (
+        <section className='location_skeleton' role='status' aria-live='polite'>
+        <span className='sr_only'>{t('locations.loading')}</span>
         <div className='location_skeleton_heading' aria-hidden='true'>
             <span className='skeleton location_skeleton_eyebrow' />
             <span className='skeleton location_skeleton_title' />
@@ -39,13 +43,15 @@ const LocationSkeleton = () => (
                 </div>
             ))}
         </div>
-    </section>
-);
+        </section>
+    );
+};
 
 const LocationsPage = () => {
+    const { t } = useLanguage();
     const [locationId, setLocationId] = useState(getRandomLocationId);
     const [searchValue, setSearchValue] = useState('');
-    const [validationError, setValidationError] = useState('');
+    const [hasValidationError, setHasValidationError] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
 
     const locationUrl = `${API_BASE_URL}/location/${locationId}`;
@@ -67,8 +73,8 @@ const LocationsPage = () => {
     const handleInputChange = (event) => {
         setSearchValue(event.target.value);
 
-        if (validationError) {
-            setValidationError('');
+        if (hasValidationError) {
+            setHasValidationError(false);
         }
     };
 
@@ -84,13 +90,11 @@ const LocationsPage = () => {
             || nextLocationId < MIN_LOCATION_ID
             || nextLocationId > MAX_LOCATION_ID
         ) {
-            setValidationError(
-                `Ingresa un número entero de ${MIN_LOCATION_ID} a ${MAX_LOCATION_ID}.`,
-            );
+            setHasValidationError(true);
             return;
         }
 
-        setValidationError('');
+        setHasValidationError(false);
         setSearchValue(String(nextLocationId));
         setCurrentPage(1);
 
@@ -107,13 +111,13 @@ const LocationsPage = () => {
                 <div className='locations_intro'>
                     <span className='locations_eyebrow'>
                         <Sparkles size={15} aria-hidden='true' />
-                        Archivo interdimensional
+                        {t('locations.archiveEyebrow')}
                     </span>
-                    <h1 id='locations-title'>Ubicaciones</h1>
-                    <p>Explora cada dimensión conocida del multiverso y descubre quién vive en ella.</p>
+                    <h1 id='locations-title'>{t('locations.title')}</h1>
+                    <p>{t('locations.intro')}</p>
                     <span className='locations_range'>
                         <MapPin size={16} aria-hidden='true' />
-                        {MAX_LOCATION_ID} ubicaciones registradas
+                        {t('locations.registeredCount', { count: MAX_LOCATION_ID })}
                     </span>
                 </div>
 
@@ -123,8 +127,8 @@ const LocationsPage = () => {
                             <MapPin size={20} />
                         </span>
                         <div>
-                            <label htmlFor='location-id'>ID de ubicación</label>
-                            <p>Abre las coordenadas de un lugar</p>
+                            <label htmlFor='location-id'>{t('locations.idLabel')}</label>
+                            <p>{t('locations.formHint')}</p>
                         </div>
                     </div>
 
@@ -141,22 +145,25 @@ const LocationsPage = () => {
                             required
                             value={searchValue}
                             onChange={handleInputChange}
-                            aria-invalid={Boolean(validationError)}
-                            aria-describedby={validationError ? 'location-input-error' : 'location-help'}
-                            placeholder={`${MIN_LOCATION_ID} a ${MAX_LOCATION_ID}`}
+                            aria-invalid={hasValidationError}
+                            aria-describedby={hasValidationError ? 'location-input-error' : 'location-help'}
+                            placeholder={t('locations.rangePlaceholder', {
+                                min: MIN_LOCATION_ID,
+                                max: MAX_LOCATION_ID,
+                            })}
                         />
                         <button className='btn locations_search_button' type='submit'>
                             <Search size={18} strokeWidth={2.2} aria-hidden='true' />
-                            Buscar
+                            {t('common.search')}
                         </button>
                     </div>
                     <p id='location-help' className='locations_help'>
-                        Ingresa un número entero de {MIN_LOCATION_ID} a {MAX_LOCATION_ID}.
+                        {t('locations.validation', { min: MIN_LOCATION_ID, max: MAX_LOCATION_ID })}
                     </p>
-                    {validationError && (
+                    {hasValidationError && (
                         <p id='location-input-error' className='locations_field_error' role='alert'>
                             <AlertTriangle size={15} aria-hidden='true' />
-                            {validationError}
+                            {t('locations.validation', { min: MIN_LOCATION_ID, max: MAX_LOCATION_ID })}
                         </p>
                     )}
                 </form>
@@ -172,12 +179,12 @@ const LocationsPage = () => {
                         <AlertTriangle size={25} />
                     </span>
                     <div>
-                        <h2>Coordenadas no disponibles</h2>
-                        <p>{getLocationErrorMessage(locationError, locationId)}</p>
+                        <h2>{t('locations.unavailableTitle')}</h2>
+                        <p>{getLocationErrorMessage(locationError, locationId, t)}</p>
                     </div>
                     <button type='button' className='btn' onClick={refetchLocation}>
                         <RefreshCw size={17} aria-hidden='true' />
-                        Reintentar
+                        {t('common.retry')}
                     </button>
                 </div>
             )}

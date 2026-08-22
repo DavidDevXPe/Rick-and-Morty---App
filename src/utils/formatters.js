@@ -1,15 +1,18 @@
-const spanishDateFormatter = new Intl.DateTimeFormat('es-ES', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-});
+const dateFormatters = Object.fromEntries(
+    ['es-ES', 'en-US'].map((locale) => [locale, new Intl.DateTimeFormat(locale, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+    })]),
+);
 
-export const formatAirDate = (airDate) => {
+export const formatAirDate = (airDate, language = 'es') => {
     if (!airDate) {
-        return 'Fecha desconocida';
+        return '';
     }
 
     const parsedDate = new Date(`${airDate} 00:00:00 UTC`);
-    return Number.isNaN(parsedDate.getTime()) ? airDate : spanishDateFormatter.format(parsedDate);
+    const locale = language === 'en' ? 'en-US' : 'es-ES';
+    return Number.isNaN(parsedDate.getTime()) ? airDate : dateFormatters[locale].format(parsedDate);
 };

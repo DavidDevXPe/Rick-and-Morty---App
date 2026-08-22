@@ -1,6 +1,7 @@
 .characters_page {
-    width: 100%;
+    width: min(100%, var(--rm-characters-max));
     min-width: 0;
+    margin-inline: auto;
 }
 
 .characters_page > .character_collection {

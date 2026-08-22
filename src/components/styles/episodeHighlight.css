@@ -5,13 +5,13 @@
 .episode_highlight_hero {
     position: relative;
     display: grid;
-    width: min(100%, var(--rm-hero-max));
-    min-height: 212px;
-    grid-template-columns: 200px minmax(0, 1fr);
+    width: 100%;
+    min-height: 240px;
+    grid-template-columns: 208px minmax(0, 1fr);
     align-items: stretch;
-    gap: 28px;
-    margin: 0 auto 24px;
-    padding: 14px 31px;
+    gap: 30px;
+    margin: 0 auto 26px;
+    padding: 16px 32px;
     overflow: hidden;
     background: linear-gradient(105deg, var(--rm-hero-start) 0%, var(--rm-hero-mid) 47%, var(--rm-hero-end) 100%);
     border: 1px solid var(--rm-border-accent);
@@ -24,7 +24,7 @@
     inset: 0;
     width: 100%;
     background:
-        linear-gradient(90deg, rgba(2, 11, 17, 0.97) 0%, rgba(3, 16, 24, 0.9) 25%, rgba(3, 16, 24, 0.48) 46%, rgba(3, 16, 24, 0.06) 72%),
+        linear-gradient(90deg, rgba(3, 16, 26, 0.98) 0%, rgba(3, 16, 26, 0.82) 38%, rgba(3, 16, 26, 0.20) 75%, rgba(3, 16, 26, 0.08) 100%),
         url('../../assets/rick-morty/generated/episode-current-background.png') center 52% / cover no-repeat;
     opacity: 0.96;
     pointer-events: none;
@@ -42,8 +42,8 @@
 .episode_highlight_media {
     position: relative;
     z-index: 2;
-    width: 200px;
-    height: 182px;
+    width: 208px;
+    height: 204px;
     align-self: center;
     overflow: hidden;
     background: var(--rm-surface-hover);
@@ -99,10 +99,10 @@
 
 .episode_highlight_name {
     max-width: 680px;
-    margin-top: 8px;
+    margin-top: 10px;
     overflow: hidden;
     color: var(--rm-text-on-dark);
-    font-size: clamp(1.65rem, 2.05vw, 2rem);
+    font-size: clamp(1.75rem, 2.15vw, 2.16rem);
     font-weight: 780;
     line-height: 1.13;
     letter-spacing: -0.035em;
@@ -115,8 +115,8 @@
     min-width: 0;
     flex-wrap: wrap;
     align-items: center;
-    gap: 9px 20px;
-    margin-top: 8px;
+    gap: 10px 22px;
+    margin-top: 10px;
     color: #d0d7d9;
     font-size: 0.88rem;
 }
@@ -139,8 +139,8 @@
 
 .episode_highlight_controls {
     display: flex;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 18px;
+    margin-top: 22px;
 }
 
 .episode_highlight_controls .btn {
@@ -157,13 +157,13 @@
 }
 
 .episode_highlight--error {
-    width: min(100%, var(--rm-hero-max));
+    width: 100%;
     margin: 0 auto 28px;
 }
 
 .episode_highlight--error .collection_state {
     width: 100%;
-    min-height: 212px;
+    min-height: 240px;
     margin: 0;
 }
 
@@ -172,8 +172,8 @@
 }
 
 .episode_highlight_skeleton_media {
-    width: 200px;
-    height: 182px;
+    width: 208px;
+    height: 204px;
     align-self: center;
     border-radius: 13px;
 }

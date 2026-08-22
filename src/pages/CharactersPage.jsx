@@ -7,11 +7,13 @@ import { API_BASE_URL, MAX_EPISODE_ID, MIN_EPISODE_ID } from '../config';
 import useFavorites from '../hooks/useFavorites';
 import useFetch from '../hooks/useFetch';
 import usePaginatedList from '../hooks/usePaginatedList';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/charactersPage.css';
 
 const EMPTY_FILTERS = { gender: '', name: '', species: '', status: '' };
 
 const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
+    const { t } = useLanguage();
     const [mode, setMode] = useState('browse');
     const [currentEpisodeId, setCurrentEpisodeId] = useState(
         () => focusEpisodeId ?? MIN_EPISODE_ID,
@@ -133,7 +135,7 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
             {mode === 'search' && (
                 <CharacterGrid
                     characters={searchResults}
-                    emptyMessage='No encontramos personajes con estos filtros.'
+                    emptyMessage={t('characters.emptyMessage')}
                     error={isEmptySearch ? null : searchError}
                     hasMore={!searchError && hasMoreResults}
                     isFavorite={isFavorite}
@@ -142,22 +144,22 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
                     onLoadMore={loadMoreResults}
                     onRetry={refetchSearch}
                     onToggleFavorite={toggleFavorite}
-                    title='Resultados de búsqueda'
+                    title={t('characters.searchResults')}
                 />
             )}
 
             {mode === 'favorites' && (
                 <CharacterGrid
                     characters={favoriteCharacters}
-                    emptyActionLabel='Volver a episodios'
-                    emptyMessage='Todavía no tienes personajes favoritos. Guarda alguno desde cualquier card.'
+                    emptyActionLabel={t('characters.backToEpisodes')}
+                    emptyMessage={t('characters.noFavorites')}
                     error={favoritesError}
                     isFavorite={isFavorite}
                     isLoading={isFavoritesLoading}
                     onClear={handleClearFilters}
                     onRetry={refetchFavorites}
                     onToggleFavorite={toggleFavorite}
-                    title='Tus favoritos'
+                    title={t('characters.favoritesTitle')}
                 />
             )}
         </div>

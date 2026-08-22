@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     ChevronDown,
@@ -6,26 +6,46 @@ import {
     Heart,
     MapPin,
     Moon,
+    RefreshCcw,
     Sun,
     UsersRound,
 } from 'lucide-react';
 import rickAndMortyLogo from '../assets/rick-morty/branding/rick-and-morty-header-logo.png';
-import rickAvatar from '../assets/rick-morty/branding/rick-avatar.png';
-import { API_BASE_URL, THEME_STORAGE_KEY } from '../config';
+import rickAvatar from '../assets/rick-morty/branding/welcome-rick.png';
+import mortyAvatar from '../assets/rick-morty/branding/welcome-morty.png';
+import {
+    API_BASE_URL,
+    SELECTED_AVATAR_STORAGE_KEY,
+    THEME_STORAGE_KEY,
+} from '../config';
 import useFavorites from '../hooks/useFavorites';
 import useFetch from '../hooks/useFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { useLanguage } from '../i18n/useLanguage';
 import './styles/header.css';
 
 const TABS = [
-    { icon: UsersRound, id: 'characters', label: 'Personajes' },
-    { icon: CirclePlay, id: 'episodes', label: 'Episodios' },
-    { icon: MapPin, id: 'locations', label: 'Ubicaciones' },
+    { icon: UsersRound, id: 'characters' },
+    { icon: CirclePlay, id: 'episodes' },
+    { icon: MapPin, id: 'locations' },
 ];
 
-const numberFormatter = new Intl.NumberFormat('es-ES');
+const AVATARS = {
+    morty: mortyAvatar,
+    rick: rickAvatar,
+};
 
-const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
+const getSelectedAvatar = (fallbackAvatar) => {
+    try {
+        const storedAvatar = window.localStorage.getItem(SELECTED_AVATAR_STORAGE_KEY);
+        return AVATARS[storedAvatar] ? storedAvatar : fallbackAvatar;
+    } catch {
+        return fallbackAvatar;
+    }
+};
+
+const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile }) => {
+    const { language, locale, t, toggleLanguage } = useLanguage();
     const [theme, setTheme] = useLocalStorage(THEME_STORAGE_KEY, 'dark');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
@@ -33,10 +53,20 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
     const firstMenuItemRef = useRef(null);
     const { favoriteIds } = useFavorites();
     const { data } = useFetch(`${API_BASE_URL}/character`);
+    const selectedAvatar = getSelectedAvatar(profile.version);
+    const selectedAvatarName = selectedAvatar === 'morty' ? 'Morty' : 'Rick';
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         document.documentElement.dataset.theme = theme;
     }, [theme]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(SELECTED_AVATAR_STORAGE_KEY, selectedAvatar);
+        } catch {
+            // Preferences can be unavailable in private or restricted contexts.
+        }
+    }, [selectedAvatar]);
 
     useEffect(() => {
         if (!isMenuOpen) {
@@ -84,26 +114,26 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
         onShowFavorites();
     };
 
+    const handleChangeUser = () => {
+        setIsMenuOpen(false);
+        onChangeUser();
+    };
+
     return (
         <header className='header'>
             <div className='header_inner'>
-                <button
-                    type='button'
-                    className='header_brand'
-                    onClick={() => handleTabChange('characters')}
-                    aria-label='Ir a Personajes — Rick and Morty'
-                >
+                <div className='header_brand'>
                     <img
                         className='header_brand_logo'
                         src={rickAndMortyLogo}
-                        alt=''
+                        alt='Rick and Morty'
                         width='366'
                         height='100'
                     />
-                </button>
+                </div>
 
-                <nav className='header_nav' aria-label='Secciones principales'>
-                    {TABS.map(({ icon: Icon, id, label }) => (
+                <nav className='header_nav' aria-label={t('nav.ariaLabel')}>
+                    {TABS.map(({ icon: Icon, id }) => (
                         <button
                             key={id}
                             type='button'
@@ -112,26 +142,35 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
                             onClick={() => handleTabChange(id)}
                         >
                             <Icon size={21} strokeWidth={1.8} aria-hidden='true' />
-                            <span>{label}</span>
+                            <span>{t(`nav.${id}`)}</span>
                         </button>
                     ))}
                 </nav>
 
                 <div className='header_actions'>
-                    <span className='header_count' title='Total de personajes en la API'>
+                    <span className='header_count' title={t('header.totalCharactersTitle')}>
                         <UsersRound size={24} strokeWidth={1.8} aria-hidden='true' />
                         <span>
-                            <strong>{data ? numberFormatter.format(data.info.count) : '—'}</strong>
-                            <small>Personajes</small>
+                            <strong>{data ? new Intl.NumberFormat(locale).format(data.info.count) : '—'}</strong>
+                            <small>{t('header.characters')}</small>
                         </span>
                     </span>
+
+                    <button
+                        type='button'
+                        className='header_language'
+                        onClick={toggleLanguage}
+                        aria-label={t('language.controlLabel')}
+                    >
+                        {language.toUpperCase()}
+                    </button>
 
                     <button
                         type='button'
                         className='theme_toggle'
                         onClick={toggleTheme}
                         aria-pressed={theme === 'light'}
-                        aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+                        aria-label={theme === 'dark' ? t('header.themeToLight') : t('header.themeToDark')}
                     >
                         <span className={theme === 'light' ? 'theme_toggle_option theme_toggle_option--active' : 'theme_toggle_option'}>
                             <Sun size={18} aria-hidden='true' />
@@ -150,12 +189,12 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
                             aria-haspopup='menu'
                             aria-expanded={isMenuOpen}
                             aria-controls='profile-menu'
-                            aria-label='Menú de perfil'
+                            aria-label={t('header.profileMenu')}
                         >
                             <span className='header_avatar'>
                                 <img
-                                    src={rickAvatar}
-                                    alt=''
+                                    src={AVATARS[selectedAvatar]}
+                                    alt={t('header.avatarAlt', { name: selectedAvatarName })}
                                     width='1254'
                                     height='1254'
                                     decoding='async'
@@ -170,7 +209,10 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
 
                         {isMenuOpen && (
                             <div id='profile-menu' className='header_dropdown' role='menu'>
-                                <p className='header_dropdown_title'>Mi multiverso</p>
+                                <div className='header_dropdown_profile'>
+                                    <strong>{profile.name}</strong>
+                                    <span>{t('header.profileVersion', { version: selectedAvatarName })}</span>
+                                </div>
                                 <button
                                     ref={firstMenuItemRef}
                                     type='button'
@@ -179,8 +221,17 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
                                     onClick={handleFavoritesClick}
                                 >
                                     <Heart size={17} aria-hidden='true' />
-                                    <span>Favoritos</span>
+                                    <span>{t('header.favorites')}</span>
                                     <span className='header_dropdown_count'>{favoriteIds.length}</span>
+                                </button>
+                                <button
+                                    type='button'
+                                    role='menuitem'
+                                    className='header_dropdown_item header_dropdown_item--secondary'
+                                    onClick={handleChangeUser}
+                                >
+                                    <RefreshCcw size={17} aria-hidden='true' />
+                                    <span>{t('header.changeUser')}</span>
                                 </button>
                             </div>
                         )}
@@ -193,8 +244,13 @@ const Header = ({ activeTab, onTabChange, onShowFavorites }) => {
 
 Header.propTypes = {
     activeTab: PropTypes.string.isRequired,
+    onChangeUser: PropTypes.func.isRequired,
     onShowFavorites: PropTypes.func.isRequired,
     onTabChange: PropTypes.func.isRequired,
+    profile: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        version: PropTypes.oneOf(['rick', 'morty']).isRequired,
+    }).isRequired,
 };
 
 export default Header;

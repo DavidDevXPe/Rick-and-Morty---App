@@ -1,9 +1,9 @@
 .search_filters {
     display: grid;
-    width: min(100%, 1352px);
+    width: 100%;
     grid-template-columns: minmax(390px, 1fr) auto;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
     margin: 0 auto 17px;
 }
 
@@ -11,7 +11,7 @@
     position: relative;
     display: flex;
     min-width: 0;
-    height: 61px;
+    height: 64px;
     align-items: center;
     overflow: hidden;
     background: rgba(6, 19, 28, 0.86);
@@ -59,7 +59,7 @@
 
 .search_filters_submit {
     width: 106px;
-    min-height: 43px;
+    min-height: 46px;
     flex: none;
     margin-right: 8px;
     border-radius: 10px;
@@ -67,15 +67,15 @@
 
 .search_filters_selects {
     display: grid;
-    grid-template-columns: repeat(3, clamp(145px, 11.4vw, 174px)) minmax(145px, auto);
+    grid-template-columns: repeat(3, clamp(145px, 10.8vw, 166px)) minmax(150px, auto);
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .search_filters_field {
     display: grid;
     min-width: 0;
-    height: 61px;
+    height: 64px;
     align-content: center;
     gap: 1px;
     padding: 7px 14px 6px;
@@ -116,7 +116,8 @@
 }
 
 .search_filters_clear {
-    min-height: 48px;
+    height: 64px;
+    min-height: 64px;
     padding-inline: 16px;
     font-size: 0.86rem;
     border-radius: var(--rm-radius-md);
@@ -138,7 +139,8 @@
     }
 
     .search_filters_clear {
-        min-height: 61px;
+        height: 64px;
+        min-height: 64px;
     }
 }
 

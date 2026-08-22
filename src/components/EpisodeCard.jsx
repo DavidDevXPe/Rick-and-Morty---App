@@ -1,13 +1,17 @@
 import PropTypes from 'prop-types';
 import { ArrowRight, CalendarDays, Play, UsersRound } from 'lucide-react';
+import { useLanguage } from '../i18n/useLanguage';
 import { formatAirDate } from '../utils/formatters';
 import './styles/episodeCard.css';
 
-const EpisodeCard = ({ episode, onSelect }) => (
-    <article className='episode_card'>
+const EpisodeCard = ({ episode, onSelect }) => {
+    const { language, t } = useLanguage();
+
+    return (
+        <article className='episode_card'>
         <div className='episode_card_header'>
             <span className='episode_chip'>{episode.episode}</span>
-            <span className='episode_archive_number' aria-label={`Episodio ${episode.id}`}>
+            <span className='episode_archive_number' aria-label={t('episodes.numberLabel', { id: episode.id })}>
                 #{String(episode.id).padStart(2, '0')}
             </span>
         </div>
@@ -24,11 +28,11 @@ const EpisodeCard = ({ episode, onSelect }) => (
             <div className='episode_metadata'>
                 <p className='episode_meta_item'>
                     <CalendarDays size={16} aria-hidden='true' />
-                    <span>{formatAirDate(episode.air_date)}</span>
+                    <span>{formatAirDate(episode.air_date, language) || t('common.unknownDate')}</span>
                 </p>
                 <p className='episode_meta_item'>
                     <UsersRound size={16} aria-hidden='true' />
-                    <span>{episode.characters?.length ?? 0} personajes</span>
+                    <span>{t('episode.characterCount', { count: episode.characters?.length ?? 0 })}</span>
                 </p>
             </div>
         </div>
@@ -38,11 +42,12 @@ const EpisodeCard = ({ episode, onSelect }) => (
             className='episode_select'
             onClick={() => onSelect(episode.id)}
         >
-            <span>Ver personajes</span>
+            <span>{t('episodes.viewCharacters')}</span>
             <ArrowRight size={18} aria-hidden='true' />
         </button>
-    </article>
-);
+        </article>
+    );
+};
 
 EpisodeCard.propTypes = {
     episode: PropTypes.shape({
