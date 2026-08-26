@@ -198,7 +198,7 @@ svg {
   background-image:
     linear-gradient(180deg, rgba(0, 5, 9, 0.18), rgba(0, 6, 11, 0.34)),
     radial-gradient(ellipse at center, transparent 34%, rgba(0, 5, 9, 0.2) 100%),
-    url('./assets/rick-morty/backgrounds/space-page-enhanced.png');
+    url('./assets/rick-morty/backgrounds/space-page-enhanced.webp');
   background-position: center, center, center;
   background-size: cover;
 }

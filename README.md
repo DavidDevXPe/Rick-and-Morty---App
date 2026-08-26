@@ -1,65 +1,165 @@
-# Rick and Morty Locations
+# Rick & Morty — Explorador del Multiverso
 
-A responsive React application for exploring locations and residents from the
-[Rick and Morty API](https://rickandmortyapi.com/).
+Aplicación web interactiva para explorar personajes, episodios y ubicaciones
+del universo de Rick & Morty, con filtros, favoritos, personalización de
+perfil, temas e interfaz responsive.
 
-## Features
+## Demo
 
-- Random location on first load and validated searches by location ID.
-- Correct, accessible pagination with five residents per page.
-- Abortable requests that prevent stale responses from replacing newer data.
-- Batched resident loading: one character request per visible page.
-- Explicit loading, empty, error, and retry states.
-- Responsive layout, keyboard focus styles, reduced-motion support, and semantic markup.
-- Automated component and hook tests.
+🔗 [rick-and-morty-app-phi-green.vercel.app](https://rick-and-morty-app-phi-green.vercel.app/)
 
-## Requirements
+## Funcionalidades
 
-- Node.js `20.19+` or `22.12+`
-- npm
+- Pantalla de bienvenida / onboarding con selección de versión (Rick o Morty).
+- Nombre de usuario personalizado, con persistencia del perfil entre sesiones.
+- Navegación entre las secciones Personajes, Episodios y Ubicaciones.
+- Búsqueda de personajes y episodios.
+- Filtros de personajes por estado, especie y género.
+- Sistema de favoritos, con contador y listado dedicado.
+- Contador de personajes totales en el header.
+- Cambio de idioma Español / Inglés.
+- Tema claro / oscuro persistente.
+- Estados de carga (skeletons) en personajes, episodios y ubicaciones.
+- Manejo de errores con mensajes claros y botón de reintentar.
+- Interfaz responsive.
+- Accesibilidad: roles ARIA, foco de teclado, textos alternativos y regiones
+  `aria-live` para estados dinámicos.
+- Persistencia en `localStorage` de tema, favoritos, perfil e idioma.
 
-## Getting started
+## Personajes
+
+- Búsqueda por nombre.
+- Filtros combinables por estado, especie y género.
+- Favoritos: marcar/desmarcar personajes y consultarlos en una vista aparte.
+- Navegación por el episodio seleccionado: muestra los personajes que
+  aparecen en un episodio específico.
+- Información de origen de cada personaje.
+
+## Episodios
+
+- Listado paginado de episodios de la serie.
+- Búsqueda de episodios por nombre.
+- Datos de temporada/código de episodio y fecha de emisión.
+- Cantidad de personajes por episodio.
+- Navegación directa desde un episodio hacia sus personajes.
+
+## Ubicaciones
+
+- Consulta de ubicaciones por identificador.
+- Tipo y dimensión de cada ubicación.
+- Listado paginado de residentes de la ubicación.
+- Estado dedicado cuando la ubicación no tiene residentes.
+
+## Tecnologías
+
+- [React](https://react.dev/) 18.3.1
+- [Vite](https://vitejs.dev/) 8.2.1 (bundler y servidor de desarrollo)
+- [Rick and Morty API](https://rickandmortyapi.com/) (fuente de datos)
+- [lucide-react](https://lucide.dev/) 0.468.0 (iconografía)
+- [prop-types](https://www.npmjs.com/package/prop-types) 15.8.1
+- Testing: [Vitest](https://vitest.dev/) 4.1.11, [@testing-library/react](https://testing-library.com/react) 16.3.2, @testing-library/jest-dom 7.0.1, @testing-library/user-event 14.6.5, jsdom 27.4.0
+- [ESLint](https://eslint.org/) 9.0.0 para control de calidad de código
+
+La navegación entre secciones (Personajes / Episodios / Ubicaciones) se
+maneja con estado de React, sin librería de enrutamiento.
+
+## API
+
+Los datos provienen de la [Rick and Morty API](https://rickandmortyapi.com/),
+una API pública y gratuita. La aplicación consume los endpoints de
+personajes, episodios y ubicaciones, incluyendo búsqueda, paginación y
+filtros (estado, especie, género).
+
+## Testing
+
+El proyecto usa [Vitest](https://vitest.dev/) junto con
+[Testing Library](https://testing-library.com/) (`@testing-library/react`,
+`@testing-library/jest-dom`, `@testing-library/user-event`) sobre un entorno
+`jsdom`.
+
+Cobertura actual (17 archivos de test, 58 pruebas):
+
+- Componentes: `CharacterGrid`, `Header`, `Pagination`, `ResidentCard`,
+  `ResidentList`, `SearchFilters`, `WelcomeScreen`.
+- Páginas: `CharactersPage`, `EpisodesPage`, `LocationsPage`.
+- Hooks: `useFavorites`, `useFetch`, `useLocalStorage`, `usePaginatedList`.
+- Internacionalización: `translations`.
+- `App`: pruebas unitarias e de integración.
 
 ```bash
+npm run test        # Ejecuta la suite una vez
+npm run test:watch  # Ejecuta la suite en modo watch
+```
+
+## Scripts
+
+```bash
+npm install         # Instala las dependencias
+npm run dev         # Inicia el servidor de desarrollo
+npm run build       # Genera el build de producción en dist/
+npm run lint        # Ejecuta ESLint (cero warnings permitidos)
+npm run test        # Ejecuta la suite de tests una vez
+npm run test:watch  # Ejecuta la suite de tests en modo watch
+npm run preview     # Sirve localmente el build de producción
+```
+
+## Instalación local
+
+```bash
+git clone https://github.com/DavidDevXPe/Rick-and-Morty---App.git
+cd Rick-and-Morty---App
 npm install
 npm run dev
 ```
 
-Vite prints the local development URL in the terminal.
+Vite imprime en la terminal la URL local de desarrollo.
 
-## Available scripts
+### Requisitos
 
-```bash
-npm run dev        # Start the development server
-npm run lint       # Run ESLint with zero warnings allowed
-npm run test       # Run the test suite once
-npm run test:watch # Run tests in watch mode
-npm run build      # Create a production build in dist/
-npm run preview    # Preview the production build locally
-```
+- Node.js `20.19+` o `22.12+`
+- npm
 
-## Project structure
+## SEO y Open Graph
+
+El proyecto incluye SEO básico y metadatos Open Graph / Twitter Card, lo que
+permite una vista previa social (imagen, título y descripción) al compartir
+el enlace en redes sociales y aplicaciones de mensajería. También expone
+`robots.txt` y `sitemap.xml`.
+
+## Estructura del proyecto
 
 ```text
 src/
-  components/  Presentational cards, resident loading, and pagination
-  hooks/       Abortable fetch state management
-  test/        Shared test setup and fixtures
-  App.jsx      Search, location state, and page orchestration
-  config.js    API and pagination constants
+  assets/        Branding, fondos y elementos decorativos
+  components/    Cards, estados de carga/vacío/error, header, footer
+  hooks/         useFetch, usePaginatedList, useFavorites, useLocalStorage
+  i18n/          Contexto de idioma y traducciones ES/EN
+  pages/         CharactersPage, EpisodesPage, LocationsPage
+  test/          Setup y fixtures compartidos para los tests
+  utils/         Funciones de formateo
+  App.jsx        Perfil, navegación entre secciones y layout principal
+  config.js      Constantes de API, paginación y claves de localStorage
+  main.jsx       Punto de entrada de React
+public/          Favicon e imagen Open Graph
 ```
 
-The app uses the browser Fetch API instead of an HTTP client dependency. Location
-requests and batched character requests are canceled when their URL changes or the
-component unmounts.
+## Qué aprendí
 
-## Quality checks
+Este proyecto reforzó el trabajo con una aplicación React más completa que
+una demo simple:
 
-Before opening a pull request, run:
-
-```bash
-npm run lint
-npm run test
-npm run build
-npm audit
-```
+- Consumo de múltiples endpoints de una API REST pública, con búsqueda,
+  filtros y paginación.
+- Diseño de componentes reutilizables (cards, skeletons, estados vacíos y de
+  error) compartidos entre distintas secciones.
+- Manejo de estado y efectos con hooks personalizados (`useFetch`,
+  `usePaginatedList`, `useFavorites`, `useLocalStorage`), incluyendo
+  cancelación de peticiones obsoletas.
+- Persistencia de preferencias del usuario (perfil, favoritos, tema, idioma)
+  en `localStorage`.
+- Internacionalización con contexto de React (ES/EN).
+- Diseño responsive y con foco en accesibilidad (ARIA, foco de teclado,
+  regiones `aria-live`).
+- Organización de tests con Vitest y Testing Library.
+- Estructuración de una aplicación de varias secciones sin depender de una
+  librería de enrutamiento.

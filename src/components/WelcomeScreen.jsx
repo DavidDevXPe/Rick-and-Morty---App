@@ -1,11 +1,11 @@
 import { useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import mortyPortrait from '../assets/rick-morty/branding/welcome-morty.png';
-import rickAndMortyWordmark from '../assets/rick-morty/branding/rick-and-morty-wordmark.png';
-import rickPortrait from '../assets/rick-morty/branding/welcome-rick.png';
-import bottomFrame from '../assets/rick-morty/decorative/welcome-bottom-frame.png';
-import portalGun from '../assets/rick-morty/decorative/portal-gun.png';
-import portal from '../assets/rick-morty/decorative/welcome-portal.png';
+import mortyPortrait from '../assets/rick-morty/branding/welcome-morty.webp';
+import rickAndMortyWordmark from '../assets/rick-morty/branding/rick-and-morty-wordmark.webp';
+import rickPortrait from '../assets/rick-morty/branding/welcome-rick.webp';
+import bottomFrame from '../assets/rick-morty/decorative/welcome-bottom-frame.webp';
+import portalGun from '../assets/rick-morty/decorative/portal-gun.webp';
+import portal from '../assets/rick-morty/decorative/welcome-portal.webp';
 import { PLAYER_NAME_STORAGE_KEY, SELECTED_AVATAR_STORAGE_KEY } from '../config';
 import { useLanguage } from '../i18n/useLanguage';
 import './styles/welcomeScreen.css';

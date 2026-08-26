@@ -25,7 +25,7 @@
     width: 100%;
     background:
         linear-gradient(90deg, rgba(3, 16, 26, 0.98) 0%, rgba(3, 16, 26, 0.82) 38%, rgba(3, 16, 26, 0.20) 75%, rgba(3, 16, 26, 0.08) 100%),
-        url('../../assets/rick-morty/generated/episode-current-background.png') center 52% / cover no-repeat;
+        url('../../assets/rick-morty/generated/episode-current-background.webp') center 52% / cover no-repeat;
     opacity: 0.96;
     pointer-events: none;
 }

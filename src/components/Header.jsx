@@ -10,9 +10,9 @@ import {
     Sun,
     UsersRound,
 } from 'lucide-react';
-import rickAndMortyLogo from '../assets/rick-morty/branding/rick-and-morty-header-logo.png';
-import rickAvatar from '../assets/rick-morty/branding/welcome-rick.png';
-import mortyAvatar from '../assets/rick-morty/branding/welcome-morty.png';
+import rickAndMortyLogo from '../assets/rick-morty/branding/rick-and-morty-header-logo.webp';
+import rickAvatar from '../assets/rick-morty/branding/welcome-rick.webp';
+import mortyAvatar from '../assets/rick-morty/branding/welcome-morty.webp';
 import {
     API_BASE_URL,
     SELECTED_AVATAR_STORAGE_KEY,

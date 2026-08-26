@@ -13,7 +13,7 @@
     overflow-y: auto;
     color: #f7f9fa;
     background-color: #020b11;
-    background-image: url('../../assets/rick-morty/backgrounds/welcome-multiverse.png');
+    background-image: url('../../assets/rick-morty/backgrounds/welcome-multiverse.webp');
     background-position: center bottom;
     background-size: cover;
 }
