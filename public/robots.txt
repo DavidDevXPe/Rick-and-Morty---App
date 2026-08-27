@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rick-and-morty-app-phi-green.vercel.app/sitemap.xml
+Sitemap: https://rickandmorty99.netlify.app/sitemap.xml

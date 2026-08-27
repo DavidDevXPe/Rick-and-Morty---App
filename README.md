@@ -6,7 +6,7 @@ perfil, temas e interfaz responsive.
 
 ## Demo
 
-🔗 [rick-and-morty-app-phi-green.vercel.app](https://rick-and-morty-app-phi-green.vercel.app/)
+🔗 [rickandmorty99.netlify.app](https://rickandmorty99.netlify.app/)
 
 ## Funcionalidades
 
