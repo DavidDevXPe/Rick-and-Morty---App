@@ -48,4 +48,11 @@ describe('CharacterGrid', () => {
         await user.click(screen.getByRole('button', { name: 'Limpiar filtros' }));
         expect(onClear).toHaveBeenCalledOnce();
     });
+
+    it('can expose the collection title as the page heading', () => {
+        render(<CharacterGrid {...defaultProps} headingLevel={1} />);
+
+        expect(screen.getByRole('heading', { level: 1, name: 'Personajes del episodio' }))
+            .toBeInTheDocument();
+    });
 });

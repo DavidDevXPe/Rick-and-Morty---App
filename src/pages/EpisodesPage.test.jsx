@@ -16,7 +16,7 @@ describe('EpisodesPage', () => {
     render(<EpisodesPage onSelectEpisode={onSelectEpisode} />);
 
     expect(await screen.findByRole('heading', { name: 'Pilot' })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Ver personajes' }));
+    await user.click(screen.getByRole('button', { name: 'Ver personajes de Pilot' }));
 
     expect(onSelectEpisode).toHaveBeenCalledWith(1);
   });
@@ -41,6 +41,10 @@ describe('EpisodesPage', () => {
 
     expect(await screen.findByRole('heading', { name: 'Rick Potion #9' })).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('name=Rick'), expect.anything());
+
+    await user.click(screen.getByRole('button', { name: 'Borrar búsqueda' }));
+    expect(await screen.findByRole('heading', { name: 'Pilot' })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Buscar episodio...')).toHaveValue('');
   });
 
   it('loads more episodes when requested', async () => {

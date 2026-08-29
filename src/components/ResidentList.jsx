@@ -3,6 +3,7 @@ import { AlertTriangle, MapPin, RefreshCw, Users } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import useFetch from '../hooks/useFetch';
 import { useLanguage } from '../i18n/useLanguage';
+import { isCharacterBatchResponse } from '../utils/apiValidation';
 import ResidentCard from './ResidentCard';
 
 const getResidentId = (residentUrl) => residentUrl.split('/').filter(Boolean).at(-1);
@@ -37,7 +38,9 @@ const ResidentList = ({ residentUrls }) => {
     const residentsUrl = residentIds.length > 0
         ? `${API_BASE_URL}/character/${residentIds.join(',')}`
         : null;
-    const { data, error, isLoading, refetch } = useFetch(residentsUrl);
+    const { data, error, isLoading, refetch } = useFetch(residentsUrl, {
+        validate: isCharacterBatchResponse,
+    });
 
     if (residentIds.length === 0) {
         return (
@@ -71,14 +74,19 @@ const ResidentList = ({ residentUrls }) => {
     }
 
     if (error) {
+        const hasInvalidResponse = error.code === 'INVALID_RESPONSE';
         return (
             <div className='collection_state collection_state--error residents_state' role='alert'>
                 <span className='collection_state_icon' aria-hidden='true'>
                     <AlertTriangle size={25} />
                 </span>
                 <div>
-                    <h3>{t('residents.unreachableTitle')}</h3>
-                    <p>{t('residents.loadError')}</p>
+                    <h3>{t(hasInvalidResponse
+                        ? 'residents.incompleteTitle'
+                        : 'residents.unreachableTitle')}</h3>
+                    <p>{t(hasInvalidResponse
+                        ? 'residents.incompleteMessage'
+                        : 'residents.loadError')}</p>
                 </div>
                 <button type='button' className='btn' onClick={refetch}>
                     <RefreshCw size={17} aria-hidden='true' />

@@ -11,6 +11,7 @@ import {
 } from '../config';
 import useFetch from '../hooks/useFetch';
 import { useLanguage } from '../i18n/useLanguage';
+import { isLocation } from '../utils/apiValidation';
 import './styles/locationsPage.css';
 
 const getRandomLocationId = () => (
@@ -60,7 +61,7 @@ const LocationsPage = () => {
         error: locationError,
         isLoading: isLocationLoading,
         refetch: refetchLocation,
-    } = useFetch(locationUrl);
+    } = useFetch(locationUrl, { validate: isLocation });
 
     const residents = Array.isArray(location?.residents) ? location.residents : [];
     const totalPages = Math.max(1, Math.ceil(residents.length / RESIDENTS_PER_PAGE));

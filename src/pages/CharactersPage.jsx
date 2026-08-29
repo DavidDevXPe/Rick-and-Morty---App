@@ -8,13 +8,20 @@ import useFavorites from '../hooks/useFavorites';
 import useFetch from '../hooks/useFetch';
 import usePaginatedList from '../hooks/usePaginatedList';
 import { useLanguage } from '../i18n/useLanguage';
+import {
+    isCharacterBatchResponse,
+    isCharacterListResponse,
+    isEpisode,
+} from '../utils/apiValidation';
 import './styles/charactersPage.css';
 
 const EMPTY_FILTERS = { gender: '', name: '', species: '', status: '' };
 
 const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
     const { t } = useLanguage();
-    const [mode, setMode] = useState('browse');
+    const [mode, setMode] = useState(() => (
+        favoritesRequestId > 0 ? 'favorites' : 'browse'
+    ));
     const [currentEpisodeId, setCurrentEpisodeId] = useState(
         () => focusEpisodeId ?? MIN_EPISODE_ID,
     );
@@ -22,29 +29,15 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
     const [committedFilters, setCommittedFilters] = useState(EMPTY_FILTERS);
     const { favoriteIds, isFavorite, toggleFavorite } = useFavorites();
 
-    const [trackedFocusEpisodeId, setTrackedFocusEpisodeId] = useState(focusEpisodeId);
-    if (focusEpisodeId !== trackedFocusEpisodeId) {
-        setTrackedFocusEpisodeId(focusEpisodeId);
-        if (focusEpisodeId) {
-            setMode('browse');
-            setCurrentEpisodeId(focusEpisodeId);
-        }
-    }
-
-    const [trackedFavoritesRequestId, setTrackedFavoritesRequestId] = useState(favoritesRequestId);
-    if (favoritesRequestId !== trackedFavoritesRequestId) {
-        setTrackedFavoritesRequestId(favoritesRequestId);
-        if (favoritesRequestId > 0) {
-            setMode('favorites');
-        }
-    }
-
     const {
         data: episode,
         error: episodeError,
         isLoading: isEpisodeLoading,
         refetch: refetchEpisode,
-    } = useFetch(mode === 'browse' ? `${API_BASE_URL}/episode/${currentEpisodeId}` : null);
+    } = useFetch(
+        mode === 'browse' ? `${API_BASE_URL}/episode/${currentEpisodeId}` : null,
+        { validate: isEpisode },
+    );
 
     const buildSearchUrl = (page) => {
         if (mode !== 'search') {
@@ -70,7 +63,7 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
         items: searchResults,
         loadMore: loadMoreResults,
         refetch: refetchSearch,
-    } = usePaginatedList(buildSearchUrl, searchResetKey);
+    } = usePaginatedList(buildSearchUrl, searchResetKey, isCharacterListResponse);
 
     const favoritesUrl = mode === 'favorites' && favoriteIds.length > 0
         ? `${API_BASE_URL}/character/${favoriteIds.join(',')}`
@@ -80,7 +73,7 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
         error: favoritesError,
         isLoading: isFavoritesLoading,
         refetch: refetchFavorites,
-    } = useFetch(favoritesUrl);
+    } = useFetch(favoritesUrl, { validate: isCharacterBatchResponse });
     const favoriteCharacters = useMemo(
         () => (Array.isArray(favoritesData) ? favoritesData : favoritesData ? [favoritesData] : []),
         [favoritesData],
@@ -94,8 +87,14 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
     };
 
     const handleSearchSubmit = () => {
+        const normalizedFilters = {
+            ...filters,
+            name: filters.name.trim(),
+        };
+
         setMode('search');
-        setCommittedFilters(filters);
+        setFilters(normalizedFilters);
+        setCommittedFilters(normalizedFilters);
     };
 
     const handleClearFilters = () => {
@@ -140,6 +139,7 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
                     hasMore={!searchError && hasMoreResults}
                     isFavorite={isFavorite}
                     isLoading={isSearchLoading}
+                    headingLevel={1}
                     onClear={handleClearFilters}
                     onLoadMore={loadMoreResults}
                     onRetry={refetchSearch}
@@ -156,6 +156,7 @@ const CharactersPage = ({ favoritesRequestId, focusEpisodeId = null }) => {
                     error={favoritesError}
                     isFavorite={isFavorite}
                     isLoading={isFavoritesLoading}
+                    headingLevel={1}
                     onClear={handleClearFilters}
                     onRetry={refetchFavorites}
                     onToggleFavorite={toggleFavorite}

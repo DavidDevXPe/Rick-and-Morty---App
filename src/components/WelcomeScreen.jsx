@@ -119,7 +119,7 @@ const WelcomeScreen = ({ onEnter }) => {
                 </button>
             </div>
 
-            <main className='welcome_content'>
+            <main id='main-content' className='welcome_content' tabIndex='-1'>
                 <img
                     className='welcome_wordmark'
                     src={rickAndMortyWordmark}

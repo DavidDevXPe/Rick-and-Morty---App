@@ -2,15 +2,30 @@ import { useCallback, useMemo } from 'react';
 import { FAVORITES_STORAGE_KEY } from '../config';
 import useLocalStorage from './useLocalStorage';
 
+export const normalizeFavoriteIds = (value) => (
+    Array.isArray(value)
+        ? [...new Set(value.filter((id) => Number.isSafeInteger(id) && id > 0))]
+        : []
+);
+
 const useFavorites = () => {
-    const [favoriteIds, setFavoriteIds] = useLocalStorage(FAVORITES_STORAGE_KEY, []);
+    const [storedFavoriteIds, setFavoriteIds] = useLocalStorage(FAVORITES_STORAGE_KEY, []);
+    const favoriteIds = useMemo(
+        () => normalizeFavoriteIds(storedFavoriteIds),
+        [storedFavoriteIds],
+    );
 
     const toggleFavorite = useCallback((id) => {
-        setFavoriteIds((currentIds) => (
-            currentIds.includes(id)
+        if (!Number.isSafeInteger(id) || id <= 0) {
+            return;
+        }
+
+        setFavoriteIds((currentValue) => {
+            const currentIds = normalizeFavoriteIds(currentValue);
+            return currentIds.includes(id)
                 ? currentIds.filter((favoriteId) => favoriteId !== id)
-                : [...currentIds, id]
-        ));
+                : [...currentIds, id];
+        });
     }, [setFavoriteIds]);
 
     const isFavorite = useCallback(

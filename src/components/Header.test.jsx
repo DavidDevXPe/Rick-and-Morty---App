@@ -44,7 +44,9 @@ describe('Header', () => {
     renderHeader();
 
     expect(document.documentElement.dataset.theme).toBe('dark');
-    await user.click(screen.getByRole('button', { name: 'Cambiar a tema claro' }));
+    const themeToggle = screen.getByRole('button', { name: 'Cambiar a tema claro' });
+    expect(themeToggle).not.toHaveAttribute('aria-pressed');
+    await user.click(themeToggle);
 
     expect(document.documentElement.dataset.theme).toBe('light');
     expect(JSON.parse(window.localStorage.getItem('rm-theme'))).toBe('light');
@@ -57,12 +59,12 @@ describe('Header', () => {
     renderHeader({ onShowFavorites });
 
     await user.click(screen.getByRole('button', { name: 'Menú de perfil' }));
-    const menu = screen.getByRole('menu');
+    const menu = document.getElementById('profile-menu');
 
     expect(within(menu).getByText('Ana')).toBeInTheDocument();
     expect(within(menu).getByText('2')).toBeInTheDocument();
 
-    await user.click(within(menu).getByRole('menuitem', { name: /Favoritos/ }));
+    await user.click(within(menu).getByRole('button', { name: /Favoritos/ }));
     expect(onShowFavorites).toHaveBeenCalledTimes(1);
   });
 
@@ -72,8 +74,23 @@ describe('Header', () => {
     renderHeader({ onChangeUser });
 
     await user.click(screen.getByRole('button', { name: 'Menú de perfil' }));
-    await user.click(screen.getByRole('menuitem', { name: 'Cambiar usuario' }));
+    await user.click(screen.getByRole('button', { name: 'Cambiar usuario' }));
 
     expect(onChangeUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses normal tab order inside the profile disclosure and restores focus on Escape', async () => {
+    const user = userEvent.setup();
+    renderHeader();
+
+    const trigger = screen.getByRole('button', { name: 'Menú de perfil' });
+    await user.click(trigger);
+    await user.tab();
+
+    expect(screen.getByRole('button', { name: /Favoritos/ })).toHaveFocus();
+    await user.keyboard('{Escape}');
+
+    expect(trigger).toHaveFocus();
+    expect(screen.queryByRole('button', { name: /Favoritos/ })).not.toBeInTheDocument();
   });
 });

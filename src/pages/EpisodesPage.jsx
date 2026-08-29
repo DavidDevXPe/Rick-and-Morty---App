@@ -14,6 +14,7 @@ import EpisodeCard from '../components/EpisodeCard';
 import { API_BASE_URL } from '../config';
 import usePaginatedList from '../hooks/usePaginatedList';
 import { useLanguage } from '../i18n/useLanguage';
+import { isEpisodeListResponse } from '../utils/apiValidation';
 import './styles/episodesPage.css';
 
 const SKELETON_COUNT = 8;
@@ -48,6 +49,7 @@ const EpisodesPage = ({ onSelectEpisode }) => {
     const { error, hasMore, isLoading, items, loadMore, refetch } = usePaginatedList(
         buildUrl,
         submittedName,
+        isEpisodeListResponse,
     );
 
     const handleSubmit = (event) => {
@@ -93,7 +95,7 @@ const EpisodesPage = ({ onSelectEpisode }) => {
                     <button
                         type='button'
                         className='episodes_search_clear'
-                        onClick={() => setSearchValue('')}
+                        onClick={handleClearSearch}
                         aria-label={t('episodes.clearSearchAria')}
                     >
                         <X size={18} aria-hidden='true' />

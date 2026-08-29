@@ -64,16 +64,35 @@ describe('App (integration)', () => {
 
     await user.click(screen.getByRole('button', { name: 'Agregar Rick Sanchez a favoritos' }));
     await user.click(screen.getByRole('button', { name: 'Menú de perfil' }));
-    expect(within(screen.getByRole('menu')).getByText('1')).toBeInTheDocument();
+    expect(within(document.getElementById('profile-menu')).getByText('1')).toBeInTheDocument();
     await user.keyboard('{Escape}');
 
     await user.click(screen.getByRole('button', { name: 'Episodios' }));
     expect(await screen.findByRole('heading', { name: 'Lawnmower Dog' })).toBeInTheDocument();
+    await user.type(screen.getByPlaceholderText('Buscar episodio...'), 'consulta pendiente');
 
     await user.click(screen.getByRole('button', { name: 'Ubicaciones' }));
     expect(await screen.findByRole('heading', { name: 'Location 3' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Personajes' }));
     expect(await screen.findByRole('heading', { name: 'Pilot' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Episodios' }));
+    expect(screen.getByPlaceholderText('Buscar episodio...')).toHaveValue('consulta pendiente');
+  }, 20000);
+
+  it('opens the real favorites view when requested from another tab', async () => {
+    const user = userEvent.setup();
+    window.localStorage.setItem('rm-favorites', JSON.stringify([1]));
+    vi.stubGlobal('fetch', buildFetchMock());
+    render(<App />);
+
+    await screen.findByRole('heading', { name: 'Pilot' });
+    await user.click(screen.getByRole('button', { name: 'Ubicaciones' }));
+    await screen.findByRole('heading', { name: 'Location 3' });
+    await user.click(screen.getByRole('button', { name: 'Menú de perfil' }));
+    await user.click(screen.getByRole('button', { name: /Favoritos/ }));
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Tus favoritos' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Rick Sanchez' })).toBeInTheDocument();
   });
 });

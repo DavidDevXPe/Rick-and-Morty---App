@@ -30,7 +30,7 @@ const es = {
     'header.changeUser': 'Cambiar usuario',
     'header.avatarAlt': ({ name }) => `Avatar de ${name}`,
 
-    'footer.liveInfo': 'Información en tiempo real desde la API oficial',
+    'footer.liveInfo': 'Información en tiempo real desde The Rick and Morty API',
     'footer.madeWith': 'Hecho con',
     'footer.byFans': 'por fans de Rick and Morty',
     'footer.love': 'amor',
@@ -38,6 +38,8 @@ const es = {
     'footer.apiLabel': 'API de Rick and Morty',
     'footer.docsLabel': 'Documentación de la API',
     'footer.docsTitle': 'Documentación',
+    'footer.projectLabel': 'GitHub del proyecto',
+    'footer.projectTitle': 'Código fuente del proyecto',
 
     'common.search': 'Buscar',
     'common.loading': 'Cargando…',
@@ -47,6 +49,10 @@ const es = {
     'common.unknown': 'Desconocido',
     'common.unknownFeminine': 'Desconocida',
     'common.unknownDate': 'Fecha desconocida',
+    'common.skipToContent': 'Saltar al contenido principal',
+    'common.unexpectedErrorTitle': 'El portal se desestabilizó',
+    'common.unexpectedErrorMessage': 'Ocurrió un error inesperado. Recarga la aplicación para volver a intentarlo.',
+    'common.reload': 'Recargar aplicación',
 
     'status.alive': 'Vivo',
     'status.dead': 'Muerto',
@@ -130,6 +136,7 @@ const es = {
     'episodes.loadMore': 'Cargar más episodios',
     'episodes.numberLabel': ({ id }) => `Episodio ${id}`,
     'episodes.viewCharacters': 'Ver personajes',
+    'episodes.viewCharactersOf': ({ name }) => `Ver personajes de ${name}`,
 
     'locations.notFound': ({ id }) => `No se encontró la ubicación ${id}.`,
     'locations.loadError': 'No se pudo cargar la ubicación. Verifica tu conexión e intenta de nuevo.',
@@ -199,7 +206,7 @@ const en = {
     'header.changeUser': 'Change user',
     'header.avatarAlt': ({ name }) => `${name} avatar`,
 
-    'footer.liveInfo': 'Real-time information from the official API',
+    'footer.liveInfo': 'Real-time information from The Rick and Morty API',
     'footer.madeWith': 'Made with',
     'footer.byFans': 'by Rick and Morty fans',
     'footer.love': 'love',
@@ -207,6 +214,8 @@ const en = {
     'footer.apiLabel': 'Rick and Morty API',
     'footer.docsLabel': 'API documentation',
     'footer.docsTitle': 'Documentation',
+    'footer.projectLabel': 'Project GitHub',
+    'footer.projectTitle': 'Project source code',
 
     'common.search': 'Search',
     'common.loading': 'Loading…',
@@ -216,6 +225,10 @@ const en = {
     'common.unknown': 'Unknown',
     'common.unknownFeminine': 'Unknown',
     'common.unknownDate': 'Unknown date',
+    'common.skipToContent': 'Skip to main content',
+    'common.unexpectedErrorTitle': 'The portal became unstable',
+    'common.unexpectedErrorMessage': 'An unexpected error occurred. Reload the application to try again.',
+    'common.reload': 'Reload application',
 
     'status.alive': 'Alive',
     'status.dead': 'Dead',
@@ -299,6 +312,7 @@ const en = {
     'episodes.loadMore': 'Load more episodes',
     'episodes.numberLabel': ({ id }) => `Episode ${id}`,
     'episodes.viewCharacters': 'View characters',
+    'episodes.viewCharactersOf': ({ name }) => `View characters from ${name}`,
 
     'locations.notFound': ({ id }) => `Location ${id} was not found.`,
     'locations.loadError': 'The location could not be loaded. Check your connection and try again.',

@@ -57,6 +57,9 @@ describe('App', () => {
     render(<App />);
 
     expect(await screen.findByTestId('characters-page')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Saltar al contenido principal' }))
+      .toHaveAttribute('href', '#main-content');
+    expect(document.getElementById('main-content')).toHaveAttribute('tabindex', '-1');
     expect(screen.getByRole('button', { name: 'Personajes' })).toHaveAttribute('aria-current', 'page');
     const characterCount = (await screen.findByText('826')).closest('.header_count');
     expect(characterCount).not.toHaveAttribute('title');
@@ -93,7 +96,7 @@ describe('App', () => {
 
     await user.click(screen.getByRole('button', { name: 'Ubicaciones' }));
     await user.click(screen.getByRole('button', { name: /menú de perfil/i }));
-    await user.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: /Favoritos/ }));
+    await user.click(screen.getByRole('button', { name: /Favoritos/ }));
 
     const charactersPage = await screen.findByTestId('characters-page');
     expect(charactersPage).toHaveTextContent('favoritesRequestId: 1');
@@ -240,8 +243,8 @@ describe('App', () => {
     render(<App />);
 
     await user.click(screen.getByRole('button', { name: /menú de perfil/i }));
-    expect(within(screen.getByRole('menu')).getByText('Jerry')).toBeInTheDocument();
-    await user.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Cambiar usuario' }));
+    expect(within(document.getElementById('profile-menu')).getByText('Jerry')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Cambiar usuario' }));
 
     expect(screen.getByRole('heading', { name: /Bienvenido al Multiverso/i })).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'Dinos tu nombre' })).toHaveValue('');

@@ -55,4 +55,23 @@ describe('useFavorites', () => {
 
     expect(result.current.favoriteIds).toEqual([2]);
   });
+
+  it('ignores malformed, duplicated and unsafe stored favorite ids', () => {
+    window.localStorage.setItem('rm-favorites', JSON.stringify([1, 1, -2, '3', null, 4]));
+
+    const { result } = renderHook(() => useFavorites());
+
+    expect(result.current.favoriteIds).toEqual([1, 4]);
+    expect(result.current.isFavorite(4)).toBe(true);
+  });
+
+  it('recovers when the stored favorites value is not an array', () => {
+    window.localStorage.setItem('rm-favorites', JSON.stringify({ id: 1 }));
+
+    const { result } = renderHook(() => useFavorites());
+    expect(result.current.favoriteIds).toEqual([]);
+
+    act(() => result.current.toggleFavorite(2));
+    expect(result.current.favoriteIds).toEqual([2]);
+  });
 });

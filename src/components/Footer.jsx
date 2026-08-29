@@ -36,11 +36,11 @@ const Footer = () => {
             <nav className='footer_links' aria-label={t('footer.links')}>
                 <a
                     className='footer_icon_link'
-                    href='https://github.com/rickandmortyapi'
+                    href='https://github.com/DavidDevXPe/Rick-and-Morty---App'
                     target='_blank'
                     rel='noreferrer'
-                    aria-label='GitHub'
-                    title='GitHub'
+                    aria-label={t('footer.projectLabel')}
+                    title={t('footer.projectTitle')}
                 >
                     <Github size={23} aria-hidden='true' />
                 </a>

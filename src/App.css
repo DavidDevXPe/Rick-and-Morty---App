@@ -69,11 +69,11 @@
   --rm-surface-glass: rgba(250, 253, 248, 0.9);
   --rm-border: #bdcbb8;
   --rm-border-soft: rgba(32, 61, 34, 0.16);
-  --rm-border-accent: #6b9c00;
+  --rm-border-accent: #527900;
   --rm-text: #142018;
   --rm-text-secondary: #56635a;
-  --rm-accent: #78ad00;
-  --rm-accent-strong: #5d8b00;
+  --rm-accent: #527900;
+  --rm-accent-strong: #466a00;
   --rm-on-accent: #ffffff;
   --rm-danger-surface: #fff1f1;
   --rm-shadow-card: 0 14px 32px rgba(28, 50, 23, 0.12);
@@ -243,6 +243,26 @@ svg {
 
 .app_main > * {
   animation: page-reveal 260ms var(--rm-ease) both;
+}
+
+.app_view {
+  width: 100%;
+}
+
+.app_view[hidden] {
+  display: none;
+}
+
+.app_fatal {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: var(--rm-page-gutter);
+  background: var(--rm-bg);
+}
+
+.app_fatal .collection_state {
+  width: min(100%, 42rem);
 }
 
 .page_container {

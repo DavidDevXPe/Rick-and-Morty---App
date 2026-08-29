@@ -22,6 +22,7 @@ const CharacterGrid = ({
     emptyMessage = null,
     error = null,
     hasMore = false,
+    headingLevel = 2,
     isLoading = false,
     isFavorite,
     loadMoreLabel = null,
@@ -32,6 +33,7 @@ const CharacterGrid = ({
     title,
 }) => {
     const { locale, t } = useLanguage();
+    const Heading = `h${headingLevel}`;
     const [sortOrder, setSortOrder] = useState('az');
     const sortedCharacters = useMemo(
         () => [...characters].sort((first, second) => (
@@ -48,12 +50,12 @@ const CharacterGrid = ({
         <section className='character_collection' aria-labelledby={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}>
             <div className='characters_header'>
                 <div>
-                    <h2
+                    <Heading
                         id={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}
                         className='section_title section_title--accent'
                     >
                         {title}
-                    </h2>
+                    </Heading>
                 </div>
 
                 <label className='sort_control'>
@@ -144,6 +146,7 @@ CharacterGrid.propTypes = {
     emptyMessage: PropTypes.string,
     error: PropTypes.instanceOf(Error),
     hasMore: PropTypes.bool,
+    headingLevel: PropTypes.oneOf([1, 2, 3]),
     isFavorite: PropTypes.func.isRequired,
     isLoading: PropTypes.bool,
     loadMoreLabel: PropTypes.string,

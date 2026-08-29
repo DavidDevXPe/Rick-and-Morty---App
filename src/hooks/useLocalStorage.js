@@ -51,12 +51,13 @@ const useLocalStorage = (key, initialValue) => {
 
         try {
             window.localStorage.setItem(key, JSON.stringify(nextValue));
-            window.dispatchEvent(new CustomEvent(LOCAL_STORAGE_EVENT, {
-                detail: { key, value: nextValue },
-            }));
         } catch {
             // Persistence can be unavailable in private browsing or strict environments.
         }
+
+        window.dispatchEvent(new CustomEvent(LOCAL_STORAGE_EVENT, {
+            detail: { key, value: nextValue },
+        }));
     }, [key]);
 
     return [value, setValue];

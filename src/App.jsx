@@ -3,6 +3,7 @@ import './App.css';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import WelcomeScreen from './components/WelcomeScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 import {
   PLAYER_NAME_STORAGE_KEY,
   PROFILE_STORAGE_KEY,
@@ -10,6 +11,7 @@ import {
 } from './config';
 import useLocalStorage from './hooks/useLocalStorage';
 import { LanguageProvider } from './i18n/LanguageContext';
+import { useLanguage } from './i18n/useLanguage';
 import CharactersPage from './pages/CharactersPage';
 import EpisodesPage from './pages/EpisodesPage';
 import LocationsPage from './pages/LocationsPage';
@@ -21,15 +23,35 @@ const isValidProfile = (profile) => (
 );
 
 function AppContent() {
+  const { t } = useLanguage();
   const [profile, setProfile] = useLocalStorage(PROFILE_STORAGE_KEY, null);
   const [activeTab, setActiveTab] = useState('characters');
+  const [visitedTabs, setVisitedTabs] = useState(() => new Set(['characters']));
   const [focusEpisodeId, setFocusEpisodeId] = useState(null);
   const [favoritesRequestId, setFavoritesRequestId] = useState(0);
+  const [charactersRequestId, setCharactersRequestId] = useState(0);
+
+  const markTabAsVisited = (tabId) => {
+    setVisitedTabs((currentTabs) => {
+      if (currentTabs.has(tabId)) {
+        return currentTabs;
+      }
+
+      return new Set([...currentTabs, tabId]);
+    });
+  };
+
+  const handleTabChange = (tabId) => {
+    markTabAsVisited(tabId);
+    setActiveTab(tabId);
+  };
 
   const resetNavigation = () => {
     setActiveTab('characters');
+    setVisitedTabs(new Set(['characters']));
     setFocusEpisodeId(null);
     setFavoritesRequestId(0);
+    setCharactersRequestId(0);
   };
 
   const handleEnter = (nextProfile) => {
@@ -51,38 +73,58 @@ function AppContent() {
 
   const handleSelectEpisode = (episodeId) => {
     setFocusEpisodeId(episodeId);
-    setActiveTab('characters');
+    setFavoritesRequestId(0);
+    setCharactersRequestId((requestId) => requestId + 1);
+    handleTabChange('characters');
   };
 
   const handleShowFavorites = () => {
+    setFocusEpisodeId(null);
     setFavoritesRequestId((count) => count + 1);
-    setActiveTab('characters');
+    setCharactersRequestId((requestId) => requestId + 1);
+    handleTabChange('characters');
   };
 
   if (!isValidProfile(profile)) {
-    return <WelcomeScreen onEnter={handleEnter} />;
+    return (
+      <>
+        <a className='skip_link' href='#main-content'>{t('common.skipToContent')}</a>
+        <WelcomeScreen onEnter={handleEnter} />
+      </>
+    );
   }
 
   return (
     <div className='app'>
+      <a className='skip_link' href='#main-content'>{t('common.skipToContent')}</a>
       <div className='starfield' aria-hidden='true' />
       <Header
         activeTab={activeTab}
         profile={profile}
         onChangeUser={handleChangeUser}
         onShowFavorites={handleShowFavorites}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
       />
 
-      <main className='app_main'>
-        {activeTab === 'characters' && (
-          <CharactersPage favoritesRequestId={favoritesRequestId} focusEpisodeId={focusEpisodeId} />
+      <main id='main-content' className='app_main' tabIndex='-1'>
+        {visitedTabs.has('characters') && (
+          <div className='app_view' hidden={activeTab !== 'characters'}>
+            <CharactersPage
+              key={charactersRequestId}
+              favoritesRequestId={favoritesRequestId}
+              focusEpisodeId={focusEpisodeId}
+            />
+          </div>
         )}
-        {activeTab === 'episodes' && (
-          <EpisodesPage onSelectEpisode={handleSelectEpisode} />
+        {visitedTabs.has('episodes') && (
+          <div className='app_view' hidden={activeTab !== 'episodes'}>
+            <EpisodesPage onSelectEpisode={handleSelectEpisode} />
+          </div>
         )}
-        {activeTab === 'locations' && (
-          <LocationsPage />
+        {visitedTabs.has('locations') && (
+          <div className='app_view' hidden={activeTab !== 'locations'}>
+            <LocationsPage />
+          </div>
         )}
       </main>
 
@@ -94,8 +136,23 @@ function AppContent() {
 function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <AppBoundary />
     </LanguageProvider>
+  );
+}
+
+function AppBoundary() {
+  const { t } = useLanguage();
+
+  return (
+    <ErrorBoundary
+      message={t('common.unexpectedErrorMessage')}
+      reloadLabel={t('common.reload')}
+      skipLabel={t('common.skipToContent')}
+      title={t('common.unexpectedErrorTitle')}
+    >
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 

@@ -70,13 +70,17 @@ describe('CharactersPage', () => {
 
     await screen.findByRole('heading', { name: 'Pilot' });
 
-    await user.type(screen.getByPlaceholderText('Buscar personaje...'), 'Rick');
+    await user.type(screen.getByPlaceholderText('Buscar personaje...'), '  Rick  ');
     await user.click(screen.getByRole('button', { name: 'Buscar' }));
 
     expect(await screen.findByRole('heading', { name: 'Resultados de búsqueda' })).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Rick Sanchez' })).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('name=Rick'),
+      expect.anything(),
+    );
+    expect(fetchMock).not.toHaveBeenCalledWith(
+      expect.stringContaining('name=++Rick++'),
       expect.anything(),
     );
   });
@@ -90,5 +94,23 @@ describe('CharactersPage', () => {
     await user.click(screen.getByRole('button', { name: 'Agregar Rick Sanchez a favoritos' }));
 
     expect(JSON.parse(window.localStorage.getItem('rm-favorites'))).toEqual([1]);
+  });
+
+  it('opens favorites on its initial mount when requested from another tab', async () => {
+    window.localStorage.setItem('rm-favorites', JSON.stringify([1]));
+    const fetchMock = vi.fn((url) => {
+      if (url.endsWith('/character/1')) {
+        return Promise.resolve(createJsonResponse(rick));
+      }
+
+      return Promise.reject(new Error(`Unexpected request: ${url}`));
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<CharactersPage favoritesRequestId={1} />);
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Tus favoritos' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Rick Sanchez' })).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining('/episode/'), expect.anything());
   });
 });

@@ -7,7 +7,7 @@ const initialState = {
     url: null,
 };
 
-const useFetch = (url) => {
+const useFetch = (url, { validate } = {}) => {
     const [state, setState] = useState(initialState);
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -41,6 +41,12 @@ const useFetch = (url) => {
 
                 const data = await response.json();
 
+                if (validate && !validate(data)) {
+                    const responseError = new Error('The API returned an invalid response');
+                    responseError.code = 'INVALID_RESPONSE';
+                    throw responseError;
+                }
+
                 if (isActive) {
                     setState({ data, error: null, isLoading: false, url });
                 }
@@ -57,7 +63,7 @@ const useFetch = (url) => {
             isActive = false;
             controller.abort();
         };
-    }, [refreshKey, url]);
+    }, [refreshKey, url, validate]);
 
     const isCurrentRequest = state.url === url;
 

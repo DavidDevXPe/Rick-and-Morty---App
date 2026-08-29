@@ -10,6 +10,7 @@ import {
 import { API_BASE_URL } from '../config';
 import useFetch from '../hooks/useFetch';
 import { useLanguage } from '../i18n/useLanguage';
+import { isCharacterBatchResponse } from '../utils/apiValidation';
 import { formatAirDate } from '../utils/formatters';
 import CharacterCardSkeleton from './CharacterCardSkeleton';
 import CharacterGrid from './CharacterGrid';
@@ -59,17 +60,18 @@ const EpisodeHighlight = ({
     const { language, t } = useLanguage();
     const [visibleCount, setVisibleCount] = useState(CHARACTERS_STEP);
     const characterUrls = episode?.characters ?? [];
-    const visibleIds = characterUrls.slice(0, visibleCount).map(getCharacterId).filter(Boolean);
-    const charactersUrl = visibleIds.length > 0
-        ? `${API_BASE_URL}/character/${visibleIds.join(',')}`
+    const characterIds = characterUrls.map(getCharacterId).filter(Boolean);
+    const charactersUrl = characterIds.length > 0
+        ? `${API_BASE_URL}/character/${characterIds.join(',')}`
         : null;
     const {
         data,
         error: charactersError,
         isLoading: areCharactersLoading,
         refetch: refetchCharacters,
-    } = useFetch(charactersUrl);
-    const characters = Array.isArray(data) ? data : data ? [data] : [];
+    } = useFetch(charactersUrl, { validate: isCharacterBatchResponse });
+    const allCharacters = Array.isArray(data) ? data : data ? [data] : [];
+    const characters = allCharacters.slice(0, visibleCount);
     const featuredCharacter = characters[0] ?? null;
 
     if (isEpisodeLoading) {

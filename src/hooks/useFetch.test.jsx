@@ -27,6 +27,16 @@ describe('useFetch', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
+  it('rejects successful responses that do not match the expected schema', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(createJsonResponse({ unexpected: true })));
+    const validate = (value) => Number.isSafeInteger(value?.id);
+
+    const { result } = renderHook(() => useFetch('/resource', { validate }));
+
+    await waitFor(() => expect(result.current.error?.code).toBe('INVALID_RESPONSE'));
+    expect(result.current.data).toBeNull();
+  });
+
   it('aborts the previous request when the URL changes and on unmount', async () => {
     const requests = [];
     const fetchMock = vi.fn((url, { signal }) => new Promise((resolve, reject) => {

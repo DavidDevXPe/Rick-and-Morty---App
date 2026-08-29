@@ -41,6 +41,7 @@ const EpisodeCard = ({ episode, onSelect }) => {
             type='button'
             className='episode_select'
             onClick={() => onSelect(episode.id)}
+            aria-label={t('episodes.viewCharactersOf', { name: episode.name })}
         >
             <span>{t('episodes.viewCharacters')}</span>
             <ArrowRight size={18} aria-hidden='true' />

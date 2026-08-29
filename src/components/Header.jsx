@@ -22,6 +22,7 @@ import useFavorites from '../hooks/useFavorites';
 import useFetch from '../hooks/useFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useLanguage } from '../i18n/useLanguage';
+import { isCharacterCountResponse } from '../utils/apiValidation';
 import './styles/header.css';
 
 const TABS = [
@@ -50,9 +51,10 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const menuButtonRef = useRef(null);
-    const firstMenuItemRef = useRef(null);
     const { favoriteIds } = useFavorites();
-    const { data } = useFetch(`${API_BASE_URL}/character`);
+    const { data } = useFetch(`${API_BASE_URL}/character`, {
+        validate: isCharacterCountResponse,
+    });
     const selectedAvatar = getSelectedAvatar(profile.version);
     const selectedAvatarName = selectedAvatar === 'morty' ? 'Morty' : 'Rick';
 
@@ -73,8 +75,6 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
             return undefined;
         }
 
-        firstMenuItemRef.current?.focus();
-
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpen(false);
@@ -84,11 +84,6 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
             if (event.key === 'Escape') {
                 setIsMenuOpen(false);
                 menuButtonRef.current?.focus();
-            } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-                event.preventDefault();
-                firstMenuItemRef.current?.focus();
-            } else if (event.key === 'Tab') {
-                setIsMenuOpen(false);
             }
         };
 
@@ -118,6 +113,10 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
         setIsMenuOpen(false);
         onChangeUser();
     };
+
+    const characterCount = Number.isSafeInteger(data?.info?.count)
+        ? new Intl.NumberFormat(locale).format(data.info.count)
+        : '—';
 
     return (
         <header className='header'>
@@ -151,7 +150,7 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                     <span className='header_count'>
                         <UsersRound size={24} strokeWidth={1.8} aria-hidden='true' />
                         <span>
-                            <strong>{data ? new Intl.NumberFormat(locale).format(data.info.count) : '—'}</strong>
+                            <strong>{characterCount}</strong>
                             <small>{t('header.characters')}</small>
                         </span>
                     </span>
@@ -169,7 +168,6 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                         type='button'
                         className='theme_toggle'
                         onClick={toggleTheme}
-                        aria-pressed={theme === 'light'}
                         aria-label={theme === 'dark' ? t('header.themeToLight') : t('header.themeToDark')}
                     >
                         <span className={theme === 'light' ? 'theme_toggle_option theme_toggle_option--active' : 'theme_toggle_option'}>
@@ -180,13 +178,20 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                         </span>
                     </button>
 
-                    <div className='header_menu' ref={menuRef}>
+                    <div
+                        className='header_menu'
+                        ref={menuRef}
+                        onBlur={(event) => {
+                            if (!event.currentTarget.contains(event.relatedTarget)) {
+                                setIsMenuOpen(false);
+                            }
+                        }}
+                    >
                         <button
                             ref={menuButtonRef}
                             type='button'
                             className='header_profile'
                             onClick={() => setIsMenuOpen((open) => !open)}
-                            aria-haspopup='menu'
                             aria-expanded={isMenuOpen}
                             aria-controls='profile-menu'
                             aria-label={t('header.profileMenu')}
@@ -208,15 +213,13 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                         </button>
 
                         {isMenuOpen && (
-                            <div id='profile-menu' className='header_dropdown' role='menu'>
+                            <div id='profile-menu' className='header_dropdown'>
                                 <div className='header_dropdown_profile'>
                                     <strong>{profile.name}</strong>
                                     <span>{t('header.profileVersion', { version: selectedAvatarName })}</span>
                                 </div>
                                 <button
-                                    ref={firstMenuItemRef}
                                     type='button'
-                                    role='menuitem'
                                     className='header_dropdown_item'
                                     onClick={handleFavoritesClick}
                                 >
@@ -226,7 +229,6 @@ const Header = ({ activeTab, onChangeUser, onTabChange, onShowFavorites, profile
                                 </button>
                                 <button
                                     type='button'
-                                    role='menuitem'
                                     className='header_dropdown_item header_dropdown_item--secondary'
                                     onClick={handleChangeUser}
                                 >

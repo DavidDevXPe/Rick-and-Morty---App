@@ -8,5 +8,22 @@ export default defineConfig({
     setupFiles: './src/test/setup.js',
     clearMocks: true,
     restoreMocks: true,
+    testTimeout: 10000,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{js,jsx}'],
+      exclude: [
+        'src/**/*.test.{js,jsx}',
+        'src/test/**',
+        'src/main.jsx',
+      ],
+      thresholds: {
+        statements: 70,
+        branches: 60,
+        functions: 75,
+        lines: 70,
+      },
+    },
   },
 });
