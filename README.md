@@ -144,8 +144,9 @@ el enlace en redes sociales y aplicaciones de mensajería. También expone
   encabezados de seguridad y caché inmutable para assets versionados.
 - GitHub Actions ejecuta instalación reproducible, lint, cobertura, build y
   auditoría de dependencias en cada push o pull request a `main`.
-- Dependabot revisa semanalmente actualizaciones npm compatibles (patch/minor)
-  y mensualmente las acciones de GitHub.
+- Dependabot revisa semanalmente actualizaciones npm compatibles (patch/minor,
+  con excepciones conservadoras para librerías `0.x`) y mensualmente las
+  acciones de GitHub.
 - La URL canónica, Open Graph, Twitter Card, `robots.txt` y `sitemap.xml`
   apuntan a `https://rickandmorty99.netlify.app/`.
 
